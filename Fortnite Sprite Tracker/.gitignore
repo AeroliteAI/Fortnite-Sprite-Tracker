@@ -6,8 +6,8 @@ obj/
 Installer/
 
 # User data (sprites and save files are local, not source)
-Sprites/
-Data/
+#Sprites/
+#Data/
 
 # Visual Studio / Rider
 .vs/
