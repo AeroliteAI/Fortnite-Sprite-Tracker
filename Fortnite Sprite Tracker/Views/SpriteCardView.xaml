@@ -1,0 +1,227 @@
+<UserControl x:Class="FortniteSpriteTracker.Views.SpriteCardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border x:Name="CardBorder"
+            Width="120"
+            CornerRadius="8"
+            BorderThickness="1.5"
+            ClipToBounds="False"
+            RenderTransformOrigin="0.5,0.5"
+            SnapsToDevicePixels="True">
+
+        <!-- Dynamic border color based on state -->
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="BorderBrush" Value="#2A2A40"/>
+                <Setter Property="Background"  Value="#1A1A2E"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsCollected}" Value="True">
+                        <Setter Property="BorderBrush" Value="#4ADE80"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsMastered}" Value="True">
+                        <Setter Property="BorderBrush" Value="#F59E0B"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+
+        <!-- Drop shadow — inline so Storyboard can animate BlurRadius -->
+        <Border.Effect>
+            <DropShadowEffect x:Name="CardShadow"
+                              BlurRadius="8" ShadowDepth="3"
+                              Direction="270" Color="#000000" Opacity="0.45"/>
+        </Border.Effect>
+
+        <!-- Scale on hover -->
+        <Border.RenderTransform>
+            <ScaleTransform x:Name="CardScale" ScaleX="1" ScaleY="1"/>
+        </Border.RenderTransform>
+
+        <Border.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="CardScale"
+                                         Storyboard.TargetProperty="ScaleX"
+                                         To="1.04" Duration="0:0:0.18">
+                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetName="CardScale"
+                                         Storyboard.TargetProperty="ScaleY"
+                                         To="1.04" Duration="0:0:0.18">
+                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetName="CardBorder"
+                                         Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                         To="24" Duration="0:0:0.18">
+                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="CardScale"
+                                         Storyboard.TargetProperty="ScaleX"
+                                         To="1.0" Duration="0:0:0.18">
+                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetName="CardScale"
+                                         Storyboard.TargetProperty="ScaleY"
+                                         To="1.0" Duration="0:0:0.18">
+                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetName="CardBorder"
+                                         Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                         To="8" Duration="0:0:0.18">
+                            <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="110"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+
+            <!-- ── Image area ──────────────────────────────────────── -->
+            <Border Grid.Row="0" CornerRadius="7,7,0,0" ClipToBounds="True" Background="#12121F">
+                <Image Source="{Binding Image}"
+                       Stretch="Uniform"
+                       Margin="6"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+            </Border>
+
+            <!-- Collected checkmark badge (top-right of image) -->
+            <Border Grid.Row="0"
+                    VerticalAlignment="Top" HorizontalAlignment="Right"
+                    Background="#4ADE80" CornerRadius="0,7,0,5"
+                    Padding="4,2"
+                    Visibility="{Binding IsCollected, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Text="✓" Foreground="#0D0D15" FontSize="9" FontWeight="Bold"/>
+            </Border>
+
+            <!-- ── Display name ────────────────────────────────────── -->
+            <TextBlock Grid.Row="1"
+                       Text="{Binding DisplayName}"
+                       Foreground="#E2E8F0"
+                       FontSize="10.5"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       HorizontalAlignment="Center"
+                       Margin="6,5,6,3"
+                       ToolTip="{Binding DisplayName}"/>
+
+            <!-- ── Action bar ──────────────────────────────────────── -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Crown / Mastery toggle -->
+                <Button Grid.Column="0"
+                        Command="{Binding ToggleMasteredCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="Toggle Mastered"
+                        Padding="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="CrownBd"
+                                    Background="Transparent"
+                                    CornerRadius="0,0,0,7"
+                                    RenderTransformOrigin="0.5,0.5">
+                                <Border.RenderTransform>
+                                    <ScaleTransform x:Name="CrownScale" ScaleX="1" ScaleY="1"/>
+                                </Border.RenderTransform>
+                                <Image Source="{Binding CrownImage}"
+                                       Width="18" Height="18"
+                                       RenderOptions.BitmapScalingMode="HighQuality"
+                                       Margin="0"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="CrownScale"
+                                                                 Storyboard.TargetProperty="ScaleX"
+                                                                 To="1.15" Duration="0:0:0.15">
+                                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="CrownScale"
+                                                                 Storyboard.TargetProperty="ScaleY"
+                                                                 To="1.15" Duration="0:0:0.15">
+                                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="CrownScale"
+                                                                 Storyboard.TargetProperty="ScaleX"
+                                                                 To="1.0" Duration="0:0:0.15">
+                                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation Storyboard.TargetName="CrownScale"
+                                                                 Storyboard.TargetProperty="ScaleY"
+                                                                 To="1.0" Duration="0:0:0.15">
+                                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- Collect toggle button -->
+                <Button Grid.Column="1"
+                        Command="{Binding ToggleCollectedCommand}"
+                        Background="{Binding IsCollected, Converter={StaticResource BoolToCollectedBrushConverter}}"
+                        Foreground="{Binding IsCollected, Converter={StaticResource BoolToCollectedForegroundConverter}}"
+                        Content="{Binding IsCollected, Converter={StaticResource BoolToCollectedTextConverter}}"
+                        BorderThickness="0"
+                        FontSize="10"
+                        FontWeight="SemiBold"
+                        Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="CollectBd"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="0,0,7,0">
+                                <TextBlock Text="{TemplateBinding Content}"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="CollectBd" Property="Opacity" Value="0.82"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="CollectBd" Property="Opacity" Value="0.65"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

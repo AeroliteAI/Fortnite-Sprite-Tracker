@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+
+# Installer (script is small but AppFiles + Output are 200MB+; rebuild when needed)
+Installer/
+
+# User data (sprites and save files are local, not source)
+Sprites/
+Data/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+
+# OS
+Thumbs.db
+.DS_Store
