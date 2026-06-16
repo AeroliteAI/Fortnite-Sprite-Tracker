@@ -20,3 +20,9 @@ public enum SortMode
     UnmasteredFirst,
     RarityFirst
 }
+
+public enum GroupMode
+{
+    ByVariant,
+    ByType
+}

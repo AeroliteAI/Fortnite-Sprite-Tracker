@@ -246,6 +246,24 @@
 
             </Grid>
 
+            <!-- One-time pulse glow played by code-behind when a card is just collected/mastered -->
+            <Border x:Name="CollectedPulseGlow"
+                    Grid.RowSpan="3" Margin="-2" CornerRadius="8" BorderThickness="3"
+                    BorderBrush="#4ADE80" Background="Transparent" Opacity="0"
+                    IsHitTestVisible="False">
+                <Border.Effect>
+                    <DropShadowEffect Color="#4ADE80" BlurRadius="20" ShadowDepth="0" Opacity="1"/>
+                </Border.Effect>
+            </Border>
+            <Border x:Name="MasteredPulseGlow"
+                    Grid.RowSpan="3" Margin="-2" CornerRadius="8" BorderThickness="3"
+                    BorderBrush="#F59E0B" Background="Transparent" Opacity="0"
+                    IsHitTestVisible="False">
+                <Border.Effect>
+                    <DropShadowEffect Color="#F59E0B" BlurRadius="20" ShadowDepth="0" Opacity="1"/>
+                </Border.Effect>
+            </Border>
+
         </Grid>
     </Border>
 </UserControl>

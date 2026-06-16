@@ -251,21 +251,21 @@ Filenames follow the pattern <Run Foreground="#E2E8F0" FontWeight="SemiBold">{Na
                         <StackPanel>
 
                             <TextBlock Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,10">BASE SPRITES</TextBlock>
-                            <TextBlock Style="{StaticResource CodeTextStyle}">Fire Sprite RARE.webp</TextBlock>
-                            <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ Displayed as "Fire Sprite" with a RARE badge · Normal group</TextBlock>
-                            <TextBlock Style="{StaticResource CodeTextStyle}">Demon Sprite EPIC.webp</TextBlock>
-                            <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ Displayed as "Demon Sprite" with an EPIC badge · Normal group</TextBlock>
-                            <TextBlock Style="{StaticResource CodeTextStyle}">Dream Sprite LEGENDARY.webp</TextBlock>
-                            <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ Displayed as "Dream Sprite" with a LEGENDARY badge · Normal group</TextBlock>
+                            <TextBlock Style="{StaticResource CodeTextStyle}">Fire RARE.webp</TextBlock>
+                            <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ Displayed as "Fire" with a RARE badge · Normal group</TextBlock>
+                            <TextBlock Style="{StaticResource CodeTextStyle}">Demon EPIC.webp</TextBlock>
+                            <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ Displayed as "Demon" with an EPIC badge · Normal group</TextBlock>
+                            <TextBlock Style="{StaticResource CodeTextStyle}">Dream LEGENDARY.webp</TextBlock>
+                            <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ Displayed as "Dream" with a LEGENDARY badge · Normal group</TextBlock>
                             <TextBlock Style="{StaticResource CodeTextStyle}">Burnt Peanut MYTHIC.webp</TextBlock>
                             <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,16">→ Displayed as "Burnt Peanut" with a MYTHIC badge · Normal group</TextBlock>
 
                             <TextBlock Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,10">VARIANT SPRITES (use SPECIAL)</TextBlock>
-                            <TextBlock Style="{StaticResource CodeTextStyle}">Fire Sprite SPECIAL Galaxy.webp</TextBlock>
-                            <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ "Fire Sprite" is the base · "Galaxy" is the variant · SPECIAL badge · Galaxy group</TextBlock>
-                            <TextBlock Style="{StaticResource CodeTextStyle}">Fire Sprite SPECIAL Gold.webp</TextBlock>
+                            <TextBlock Style="{StaticResource CodeTextStyle}">Fire SPECIAL Galaxy.webp</TextBlock>
+                            <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ "Fire" is the base · "Galaxy" is the variant · SPECIAL badge · Galaxy group</TextBlock>
+                            <TextBlock Style="{StaticResource CodeTextStyle}">Fire SPECIAL Gold.webp</TextBlock>
                             <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,8">→ Gold group</TextBlock>
-                            <TextBlock Style="{StaticResource CodeTextStyle}">Fire Sprite SPECIAL Gummy.webp</TextBlock>
+                            <TextBlock Style="{StaticResource CodeTextStyle}">Fire SPECIAL Gummy.webp</TextBlock>
                             <TextBlock Foreground="#64748B" FontSize="11.5" Margin="0,4,0,0">→ Gummy group</TextBlock>
 
                         </StackPanel>
@@ -277,7 +277,7 @@ Filenames follow the pattern <Run Foreground="#E2E8F0" FontWeight="SemiBold">{Na
                         <StackPanel>
                             <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8">• Only <Run Foreground="#E2E8F0">.webp</Run> files are loaded — other formats are ignored.</TextBlock>
                             <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8">• The rarity keyword must be <Run Foreground="#E2E8F0">ALL CAPS</Run> and placed between the sprite name and variant suffix.</TextBlock>
-                            <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8">• The base sprite (e.g. <Run Foreground="#E2E8F0">Fire Sprite RARE.webp</Run>) must exist for variant detection to work on its SPECIAL variants.</TextBlock>
+                            <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8">• The base sprite (e.g. <Run Foreground="#E2E8F0">Fire RARE.webp</Run>) must exist for variant detection to work on its SPECIAL variants.</TextBlock>
                             <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8">• New variant suffixes (<Run Foreground="#E2E8F0">Crystal, Shadow, Og</Run>, etc.) create new groups automatically — no app changes needed.</TextBlock>
                             <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8">• Sprites install to <Run Foreground="#E2E8F0">%LOCALAPPDATA%\Fortnite Sprite Tracker\Sprites\</Run> — use the Files tab to open this folder directly.</TextBlock>
                             <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap">• Hit <Run Foreground="#E2E8F0">Refresh</Run> after dropping new files into the Sprites folder.</TextBlock>

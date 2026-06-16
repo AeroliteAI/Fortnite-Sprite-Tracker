@@ -53,14 +53,27 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool       _isLoading;
     [ObservableProperty] private string     _statusMessage            = string.Empty;
     [ObservableProperty] private int        _cardScalePercent         = 100;
+    [ObservableProperty] private GroupMode  _groupMode                = GroupMode.ByVariant;
 
     public double CardScaleFactor => CardScalePercent / 100.0;
 
     partial void OnCardScalePercentChanged(int value)
     {
         OnPropertyChanged(nameof(CardScaleFactor));
-        _ = _appSettings.SaveAsync(new Models.AppSettings { CardScalePercent = value });
+        SaveSettings();
     }
+
+    partial void OnGroupModeChanged(GroupMode value)
+    {
+        ApplyFilterAndSort();
+        SaveSettings();
+    }
+
+    private void SaveSettings() => _ = _appSettings.SaveAsync(new Models.AppSettings
+    {
+        CardScalePercent = CardScalePercent,
+        GroupMode        = GroupMode,
+    });
 
     public MainViewModel(
         ISpriteLoaderService   spriteLoader,
@@ -85,6 +98,7 @@ public partial class MainViewModel : ObservableObject
 
         var settings     = await _appSettings.LoadAsync();
         CardScalePercent = settings.CardScalePercent;
+        GroupMode        = settings.GroupMode;
 
         var spriteModels = await _spriteLoader.LoadSpritesAsync(AppPaths.Sprites);
         var saveData     = await _collectionData.LoadAsync();
@@ -126,6 +140,9 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand] private void FilterNotMastered()  => ActiveFilter = FilterMode.NotMastered;
     [RelayCommand] private void ClearSearch()        => SearchText   = string.Empty;
 
+    [RelayCommand] private void GroupByVariant() => GroupMode = GroupMode.ByVariant;
+    [RelayCommand] private void GroupByType()    => GroupMode = GroupMode.ByType;
+
     // ── Property change hooks ────────────────────────────────────────────────
 
     partial void OnSearchTextChanged(string value)       => ApplyFilterAndSort();
@@ -159,6 +176,7 @@ public partial class MainViewModel : ObservableObject
                 m.FileName,
                 m.DisplayName,
                 m.ImagePath,
+                m.Group,
                 m.VariantSuffix,
                 m.Rarity,
                 _masteredIcon!,
@@ -205,20 +223,25 @@ public partial class MainViewModel : ObservableObject
 
         var sorted = ApplySort(filtered).ToList();
 
-        // Derive category order from the actual data: Normal first, then all other suffixes A-Z
-        var categoryOrder = sorted
-            .Select(c => c.VariantCategory)
+        Func<SpriteCardViewModel, string> groupKey = GroupMode == GroupMode.ByType
+            ? c => c.SpriteType
+            : c => c.VariantCategory;
+
+        // Derive group order from the actual data.
+        // ByVariant: "Normal" sorts first, then everything else A-Z. ByType: plain A-Z.
+        var groupOrder = sorted
+            .Select(groupKey)
             .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(cat => cat != "Normal")              // Normal sorts before everything else
-            .ThenBy(cat => cat, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(key => GroupMode == GroupMode.ByVariant && key != "Normal")
+            .ThenBy(key => key, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        var groups = categoryOrder
-            .Select(category =>
+        var groups = groupOrder
+            .Select(key =>
             {
-                var isExpanded = !_collapsedGroups.Contains(category);
-                var group = new SpriteGroupViewModel(category, isExpanded);
-                foreach (var card in sorted.Where(c => c.VariantCategory == category))
+                var isExpanded = !_collapsedGroups.Contains(key);
+                var group = new SpriteGroupViewModel(key, isExpanded);
+                foreach (var card in sorted.Where(c => groupKey(c) == key))
                     group.Cards.Add(card);
                 group.PropertyChanged += (_, e) =>
                 {

@@ -150,7 +150,9 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
@@ -188,8 +190,41 @@
                         IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
                         Style="{StaticResource ToolbarButtonStyle}"/>
 
-                <!-- Sort label + ComboBox -->
+                <!-- Group-by toggle -->
                 <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Group:" Foreground="#94A3B8" FontSize="12"
+                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Button Content="By Variant"
+                            Command="{Binding GroupByVariantCommand}"
+                            Margin="0,0,6,0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource FilterButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding GroupMode}" Value="ByVariant">
+                                        <Setter Property="Background" Value="#7C3AED"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="By Type"
+                            Command="{Binding GroupByTypeCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource FilterButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding GroupMode}" Value="ByType">
+                                        <Setter Property="Background" Value="#7C3AED"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+
+                <!-- Sort label + ComboBox -->
+                <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Sort:" Foreground="#94A3B8" FontSize="12"
                                VerticalAlignment="Center" Margin="0,0,8,0"/>
                     <ComboBox Width="210"
