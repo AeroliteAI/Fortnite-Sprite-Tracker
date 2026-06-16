@@ -117,17 +117,26 @@
                                                   Content="{TemplateBinding SelectionBoxItem}"
                                                   ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                                   Margin="{TemplateBinding Padding}"
-                                                  VerticalAlignment="Center"/>
+                                                  VerticalAlignment="Center"
+                                                  IsHitTestVisible="False"/>
                                 <TextBlock Grid.Column="1" Text="▾"
                                            Foreground="#94A3B8" FontSize="11"
-                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <ToggleButton Grid.Column="0" Grid.ColumnSpan="2"
-                                             Focusable="False"
-                                             IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                             Background="Transparent" BorderThickness="0"
-                                             Cursor="Hand"/>
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                                           IsHitTestVisible="False"/>
                             </Grid>
                         </Border>
+                        <!-- Transparent click overlay as a sibling of Border — never inside it,
+                             so it cannot paint over the rounded corners in any rendering path -->
+                        <ToggleButton Style="{x:Null}"
+                                     Focusable="False"
+                                     IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                     Cursor="Hand">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border Background="Transparent" CornerRadius="6"/>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
                         <Popup x:Name="Popup" Placement="Bottom"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                AllowsTransparency="True" Focusable="False"
@@ -146,7 +155,8 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="#7C3AED"/>
+                            <Setter TargetName="Border" Property="Background"   Value="#2A2A45"/>
+                            <Setter TargetName="Border" Property="BorderBrush"  Value="#7C3AED"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -197,16 +207,18 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Bd"
                             Background="{TemplateBinding Background}"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
                             CornerRadius="6"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Opacity" Value="0.8"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="#7C3AED"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Bd" Property="Opacity" Value="0.65"/>
+                            <Setter TargetName="Bd" Property="Opacity" Value="0.7"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -228,18 +240,75 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Bd"
                             Background="{TemplateBinding Background}"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
                             CornerRadius="6"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#3A3A55"/>
+                            <Setter TargetName="Bd" Property="Background"  Value="#3A3A55"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="#7C3AED"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="#4A4A65"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Slider (dark) ─────────────────────────────────────────────────── -->
+    <Style TargetType="Slider">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid VerticalAlignment="Center">
+                        <!-- Track -->
+                        <Border Height="4" CornerRadius="2" Background="#2A2A40" Margin="8,0"/>
+                        <!-- Fill up to thumb -->
+                        <Track x:Name="PART_Track">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate TargetType="RepeatButton">
+                                            <Border Height="4" CornerRadius="2" Background="#7C3AED"/>
+                                        </ControlTemplate>
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.DecreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb>
+                                    <Thumb.Template>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Ellipse Width="14" Height="14" Fill="#7C3AED">
+                                                <Ellipse.Style>
+                                                    <Style TargetType="Ellipse">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Fill" Value="#9D5FF0"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Ellipse.Style>
+                                            </Ellipse>
+                                        </ControlTemplate>
+                                    </Thumb.Template>
+                                </Thumb>
+                            </Track.Thumb>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="Slider.IncreaseLarge" Focusable="False">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate TargetType="RepeatButton">
+                                            <Border Height="4" CornerRadius="2" Background="#2A2A40"/>
+                                        </ControlTemplate>
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -253,7 +322,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ProgressBar">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="3" ClipToBounds="True">
+                    <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="3" ClipToBounds="True">
                         <Border x:Name="PART_Indicator"
                                 Background="{TemplateBinding Foreground}"
                                 CornerRadius="3"

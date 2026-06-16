@@ -4,6 +4,9 @@ namespace FortniteSpriteTracker.Services;
 
 public class SpriteLoaderService : ISpriteLoaderService
 {
+    private static readonly HashSet<string> RarityKeywords =
+        new(StringComparer.OrdinalIgnoreCase) { "RARE", "EPIC", "LEGENDARY", "MYTHIC", "SPECIAL" };
+
     public Task<IReadOnlyList<SpriteModel>> LoadSpritesAsync(string spritesFolder)
         => Task.Run(() => LoadSprites(spritesFolder));
 
@@ -19,35 +22,61 @@ public class SpriteLoaderService : ISpriteLoaderService
         if (files.Length == 0)
             return [];
 
-        var displayNames = files
-            .Select(f => Path.GetFileNameWithoutExtension(f))
+        // First pass: strip rarity from every filename so the name set used for
+        // variant detection never contains rarity keywords.
+        var fileInfos = files
+            .Select(f =>
+            {
+                var raw            = Path.GetFileNameWithoutExtension(f);
+                var (display, rarity) = StripRarity(raw);
+                return (file: f, display, rarity);
+            })
+            .ToList();
+
+        var allDisplayNames = fileInfos
+            .Select(fi => fi.display)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var models = new List<SpriteModel>(files.Length);
 
-        foreach (var file in files)
+        foreach (var (file, display, rarity) in fileInfos)
         {
-            var fileName    = Path.GetFileName(file);
-            var displayName = Path.GetFileNameWithoutExtension(file);
-
-            GetGroupAndSuffix(displayName, displayNames, out var group, out var suffix);
+            GetGroupAndSuffix(display, allDisplayNames, out var group, out var suffix);
 
             models.Add(new SpriteModel
             {
-                FileName      = fileName,
-                DisplayName   = displayName,
+                FileName      = Path.GetFileName(file),
+                DisplayName   = display,
                 ImagePath     = file,
                 Group         = group,
                 VariantSuffix = suffix,
+                Rarity        = rarity,
             });
         }
 
         return models
             .OrderBy(m => m.Group,         StringComparer.OrdinalIgnoreCase)
-            .ThenBy(m => m.VariantSuffix != string.Empty)   // empty (Normal) sorts before any suffix
+            .ThenBy(m => m.VariantSuffix != string.Empty)
             .ThenBy(m => m.VariantSuffix,  StringComparer.OrdinalIgnoreCase)
             .ThenBy(m => m.DisplayName,    StringComparer.OrdinalIgnoreCase)
             .ToList();
+    }
+
+    // Removes the rarity keyword from the raw filename.
+    // "Fire Sprite RARE"          → ("Fire Sprite",       "RARE")
+    // "Demon Sprite SPECIAL Gold" → ("Demon Sprite Gold", "SPECIAL")
+    // "Demon Sprite Gold"         → ("Demon Sprite Gold", "")
+    private static (string display, string rarity) StripRarity(string rawName)
+    {
+        var words = rawName.Split(' ');
+        for (int i = 0; i < words.Length; i++)
+        {
+            if (!RarityKeywords.Contains(words[i])) continue;
+            var rarity  = words[i].ToUpperInvariant();
+            var display = string.Join(' ', words.Where((_, idx) => idx != i)).Trim();
+            return (display, rarity);
+        }
+        return (rawName, string.Empty);
     }
 
     private static void GetGroupAndSuffix(
@@ -56,8 +85,6 @@ public class SpriteLoaderService : ISpriteLoaderService
         out string group,
         out string suffix)
     {
-        // If the last word stripped off reveals a name that exists as its own sprite,
-        // that last word is a variant suffix. Works for any suffix automatically.
         var lastSpace = displayName.LastIndexOf(' ');
         if (lastSpace > 0)
         {
@@ -72,7 +99,6 @@ public class SpriteLoaderService : ISpriteLoaderService
             }
         }
 
-        // No matching base found — this is a base/normal sprite
         group  = displayName;
         suffix = string.Empty;
     }

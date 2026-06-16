@@ -10,6 +10,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ISpriteLoaderService   _spriteLoader;
     private readonly ICollectionDataService _collectionData;
     private readonly ImageCacheService      _imageCache;
+    private readonly AppSettingsService     _appSettings;
 
     private List<SpriteCardViewModel> _allCards = [];
     private CancellationTokenSource?  _saveCts;
@@ -17,6 +18,9 @@ public partial class MainViewModel : ObservableObject
     // Crown images loaded once from Assets/ and shared across all cards
     private BitmapSource? _masteredIcon;
     private BitmapSource? _notMasteredIcon;
+
+    // Rarity badge icons keyed by rarity name (RARE, EPIC, LEGENDARY, MYTHIC, SPECIAL)
+    private Dictionary<string, BitmapSource> _rarityIcons = [];
 
     public ObservableCollection<SpriteGroupViewModel> DisplayedSprites { get; } = [];
 
@@ -30,6 +34,7 @@ public partial class MainViewModel : ObservableObject
         "Not Collected First",
         "Mastered First",
         "Unmastered First",
+        "Rarity",
     ];
 
     [ObservableProperty] private string     _searchText               = string.Empty;
@@ -46,24 +51,39 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool       _isFilteredEmpty;
     [ObservableProperty] private bool       _isLoading;
     [ObservableProperty] private string     _statusMessage            = string.Empty;
+    [ObservableProperty] private int        _cardScalePercent         = 100;
+
+    public double CardScaleFactor => CardScalePercent / 100.0;
+
+    partial void OnCardScalePercentChanged(int value)
+    {
+        OnPropertyChanged(nameof(CardScaleFactor));
+        _ = _appSettings.SaveAsync(new Models.AppSettings { CardScalePercent = value });
+    }
 
     public MainViewModel(
         ISpriteLoaderService   spriteLoader,
         ICollectionDataService collectionData,
-        ImageCacheService      imageCache)
+        ImageCacheService      imageCache,
+        AppSettingsService     appSettings)
     {
         _spriteLoader   = spriteLoader;
         _collectionData = collectionData;
         _imageCache     = imageCache;
+        _appSettings    = appSettings;
     }
 
     public async Task InitializeAsync()
     {
         IsLoading = true;
 
-        // Crown images must be created on the UI thread (BitmapImage uses WPF internals)
+        // All PNG icons must be loaded on the UI thread
         _masteredIcon    = ImageCacheService.LoadCrownImage(AppPaths.Mastered);
         _notMasteredIcon = ImageCacheService.LoadCrownImage(AppPaths.NotMastered);
+        _rarityIcons     = LoadRarityIcons();
+
+        var settings     = await _appSettings.LoadAsync();
+        CardScalePercent = settings.CardScalePercent;
 
         var spriteModels = await _spriteLoader.LoadSpritesAsync(AppPaths.Sprites);
         var saveData     = await _collectionData.LoadAsync();
@@ -113,6 +133,17 @@ public partial class MainViewModel : ObservableObject
 
     // ── Card building ────────────────────────────────────────────────────────
 
+    private Dictionary<string, BitmapSource> LoadRarityIcons()
+    {
+        var icons = new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
+        foreach (var name in new[] { "RARE", "EPIC", "LEGENDARY", "MYTHIC", "SPECIAL" })
+        {
+            var path = Path.Combine(AppPaths.Assets, $"{name}.png");
+            icons[name] = ImageCacheService.LoadCrownImage(path);
+        }
+        return icons;
+    }
+
     private async Task<List<SpriteCardViewModel>> BuildCardsAsync(
         IReadOnlyList<SpriteModel>      models,
         Dictionary<string, SpriteData>  saveData)
@@ -121,16 +152,20 @@ public partial class MainViewModel : ObservableObject
         {
             saveData.TryGetValue(m.FileName, out var data);
 
+            _rarityIcons.TryGetValue(m.Rarity, out var rarityIcon);
+
             var card = new SpriteCardViewModel(
                 m.FileName,
                 m.DisplayName,
                 m.ImagePath,
                 m.VariantSuffix,
+                m.Rarity,
                 _masteredIcon!,
                 _notMasteredIcon!)
             {
                 IsCollected = data?.Collected ?? false,
                 IsMastered  = data?.Mastered  ?? false,
+                RarityIcon  = rarityIcon,
             };
 
             card.StateChanged += OnCardStateChanged;
@@ -211,6 +246,15 @@ public partial class MainViewModel : ObservableObject
         _                       => true,
     };
 
+    private static readonly Dictionary<string, int> RarityOrder = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["RARE"]      = 0,
+        ["EPIC"]      = 1,
+        ["LEGENDARY"] = 2,
+        ["MYTHIC"]    = 3,
+        ["SPECIAL"]   = 4,
+    };
+
     private IEnumerable<SpriteCardViewModel> ApplySort(List<SpriteCardViewModel> cards)
         => (SortMode)SelectedSortIndex switch
         {
@@ -220,7 +264,9 @@ public partial class MainViewModel : ObservableObject
             SortMode.NotCollectedFirst => cards.OrderBy(c => c.IsCollected).ThenBy(c => c.DisplayName, StringComparer.OrdinalIgnoreCase),
             SortMode.MasteredFirst     => cards.OrderByDescending(c => c.IsMastered).ThenBy(c => c.DisplayName, StringComparer.OrdinalIgnoreCase),
             SortMode.UnmasteredFirst   => cards.OrderBy(c => c.IsMastered).ThenBy(c => c.DisplayName, StringComparer.OrdinalIgnoreCase),
-            _                          => cards, // Default — already group-sorted by SpriteLoaderService
+            SortMode.RarityFirst       => cards.OrderBy(c => RarityOrder.TryGetValue(c.Rarity, out var r) ? r : 99)
+                                               .ThenBy(c => c.DisplayName, StringComparer.OrdinalIgnoreCase),
+            _                          => cards,
         };
 
     // ── Stats ────────────────────────────────────────────────────────────────

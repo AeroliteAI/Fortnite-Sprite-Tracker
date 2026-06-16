@@ -1,6 +1,7 @@
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using FortniteSpriteTracker.ViewModels;
+using FortniteSpriteTracker.Views;
 
 namespace FortniteSpriteTracker;
 
@@ -12,6 +13,9 @@ public partial class MainWindow : Window
         DataContext = viewModel;
         SetWindowIcon();
     }
+
+    private void Options_Click(object sender, RoutedEventArgs e)
+        => new OptionsWindow { Owner = this }.ShowDialog();
 
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {

@@ -13,7 +13,8 @@ public partial class App : Application
         var spriteLoader   = new SpriteLoaderService();
         var collectionData = new CollectionDataService();
         var imageCache     = new ImageCacheService();
-        var viewModel      = new MainViewModel(spriteLoader, collectionData, imageCache);
+        var appSettings    = new AppSettingsService();
+        var viewModel      = new MainViewModel(spriteLoader, collectionData, imageCache, appSettings);
 
         var mainWindow = new MainWindow(viewModel);
         mainWindow.Show();

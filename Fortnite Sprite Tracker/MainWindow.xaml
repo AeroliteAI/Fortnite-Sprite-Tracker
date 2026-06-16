@@ -43,7 +43,7 @@
                                FontSize="20" FontWeight="Black"/>
                 </StackPanel>
 
-                <!-- Right side: save status + loading indicator -->
+                <!-- Right side: save status + loading indicator + options -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <!-- "Saved ✓" flash -->
                     <TextBlock Text="{Binding StatusMessage}"
@@ -51,10 +51,16 @@
                                VerticalAlignment="Center" Margin="0,0,16,0"/>
                     <!-- Loading spinner -->
                     <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                                Margin="0,0,16,0">
                         <TextBlock Text="⟳" Foreground="#7C3AED" FontSize="16" Margin="0,0,6,0"/>
                         <TextBlock Text="Loading…" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center"/>
                     </StackPanel>
+                    <!-- Options button -->
+                    <Button Content="⚙  Options"
+                            Click="Options_Click"
+                            Style="{StaticResource ToolbarButtonStyle}"
+                            Height="30" FontSize="12"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -145,7 +151,7 @@
                     <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Search box with placeholder -->
@@ -186,7 +192,7 @@
                 <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Sort:" Foreground="#94A3B8" FontSize="12"
                                VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <ComboBox Width="172"
+                    <ComboBox Width="210"
                               ItemsSource="{Binding SortOptions}"
                               SelectedIndex="{Binding SelectedSortIndex}"/>
                 </StackPanel>
@@ -198,6 +204,7 @@
                 Background="#10101C"
                 BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
                 Padding="20,8,20,8">
+            <Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 
                 <Button Content="All"
@@ -275,6 +282,23 @@
                 </Button>
 
             </StackPanel>
+
+            <!-- Scale slider (right-aligned) -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <TextBlock Text="Size:" Foreground="#94A3B8" FontSize="12"
+                           VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <Slider Minimum="50" Maximum="150"
+                        SmallChange="5" LargeChange="10"
+                        TickFrequency="5" IsSnapToTickEnabled="True"
+                        Value="{Binding CardScalePercent}"
+                        Width="130" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding CardScalePercent, StringFormat={}{0}%}"
+                           Foreground="#E2E8F0" FontSize="12"
+                           Width="38" TextAlignment="Right"
+                           VerticalAlignment="Center" Margin="8,0,0,0"/>
+            </StackPanel>
+
+            </Grid>
         </Border>
 
         <!-- ══ SPRITE GRID ═══════════════════════════════════════════════════ -->
@@ -285,6 +309,11 @@
                           HorizontalScrollBarVisibility="Disabled"
                           CanContentScroll="False"
                           Padding="16,12,8,16">
+                <Grid>
+                    <Grid.LayoutTransform>
+                        <ScaleTransform ScaleX="{Binding CardScaleFactor}" ScaleY="{Binding CardScaleFactor}"/>
+                    </Grid.LayoutTransform>
+
                 <!-- Outer: one entry per variant group -->
                 <ItemsControl ItemsSource="{Binding DisplayedSprites}">
                     <ItemsControl.ItemTemplate>
@@ -337,6 +366,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                </Grid>
             </ScrollViewer>
 
             <!-- Empty state: no sprites in folder -->

@@ -3,11 +3,11 @@ bin/
 obj/
 
 # Installer (script is small but AppFiles + Output are 200MB+; rebuild when needed)
-Installer/
+#Installer/
 
 # User data (sprites and save files are local, not source)
-#Sprites/
-#Data/
+Sprites/
+Data/
 
 # Visual Studio / Rider
 .vs/

@@ -17,5 +17,6 @@ public enum SortMode
     CollectedFirst,
     NotCollectedFirst,
     MasteredFirst,
-    UnmasteredFirst
+    UnmasteredFirst,
+    RarityFirst
 }
