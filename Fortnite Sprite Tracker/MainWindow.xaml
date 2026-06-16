@@ -320,36 +320,54 @@
                         <DataTemplate>
                             <StackPanel Margin="0,0,0,20">
 
-                                <!-- Group header row -->
+                                <!-- Group header row (click to collapse/expand) -->
                                 <Grid Margin="4,0,4,8">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="12"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="16"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Column="0"
-                                               Text="{Binding Header}"
-                                               Foreground="{Binding Color}"
-                                               FontSize="13" FontWeight="Bold"/>
-
-                                    <TextBlock Grid.Column="2"
-                                               Text="{Binding Count, StringFormat='({0})'}"
-                                               Foreground="#3A3A5C"
-                                               FontSize="12"
-                                               VerticalAlignment="Center"/>
+                                    <Button Grid.Column="0"
+                                            Command="{Binding ToggleExpandedCommand}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            HorizontalContentAlignment="Left">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <ContentPresenter/>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding IsExpanded, Converter={StaticResource BoolToExpandArrowConverter}}"
+                                                       Foreground="{Binding Color}"
+                                                       FontSize="10"
+                                                       Margin="0,0,8,0"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Header}"
+                                                       Foreground="{Binding Color}"
+                                                       FontSize="13" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Count, StringFormat='({0})'}"
+                                                       Foreground="#3A3A5C"
+                                                       FontSize="12"
+                                                       Margin="12,0,0,0"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
 
                                     <!-- Divider line -->
-                                    <Border Grid.Column="4"
+                                    <Border Grid.Column="2"
                                             Height="1"
                                             Background="#2A2A40"
                                             VerticalAlignment="Center"/>
                                 </Grid>
 
                                 <!-- Inner: cards in this group -->
-                                <ItemsControl ItemsSource="{Binding Cards}">
+                                <ItemsControl ItemsSource="{Binding Cards}"
+                                              Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <WrapPanel Orientation="Horizontal"/>

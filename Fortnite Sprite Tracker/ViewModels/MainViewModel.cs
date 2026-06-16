@@ -14,6 +14,7 @@ public partial class MainViewModel : ObservableObject
 
     private List<SpriteCardViewModel> _allCards = [];
     private CancellationTokenSource?  _saveCts;
+    private readonly HashSet<string>  _collapsedGroups = new(StringComparer.OrdinalIgnoreCase);
 
     // Crown images loaded once from Assets/ and shared across all cards
     private BitmapSource? _masteredIcon;
@@ -215,9 +216,16 @@ public partial class MainViewModel : ObservableObject
         var groups = categoryOrder
             .Select(category =>
             {
-                var group = new SpriteGroupViewModel(category);
+                var isExpanded = !_collapsedGroups.Contains(category);
+                var group = new SpriteGroupViewModel(category, isExpanded);
                 foreach (var card in sorted.Where(c => c.VariantCategory == category))
                     group.Cards.Add(card);
+                group.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName != nameof(SpriteGroupViewModel.IsExpanded)) return;
+                    if (group.IsExpanded) _collapsedGroups.Remove(group.Header);
+                    else                  _collapsedGroups.Add(group.Header);
+                };
                 return group;
             })
             .Where(g => g.Count > 0)

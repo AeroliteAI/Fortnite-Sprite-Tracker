@@ -9,6 +9,7 @@
     <converters:BoolToCollectedForegroundConverter x:Key="BoolToCollectedForegroundConverter"/>
     <converters:FilterActiveConverter              x:Key="FilterActiveConverter"/>
     <converters:InverseBoolConverter               x:Key="InverseBoolConverter"/>
+    <converters:BoolToExpandArrowConverter         x:Key="BoolToExpandArrowConverter"/>
 
     <!-- ── Colors ─────────────────────────────────────────────────────────── -->
     <SolidColorBrush x:Key="BgBrush"          Color="#0D0D15"/>
