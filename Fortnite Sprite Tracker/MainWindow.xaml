@@ -5,13 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:FortniteSpriteTracker.ViewModels"
         xmlns:views="clr-namespace:FortniteSpriteTracker.Views"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         Title="Sprite Tracker"
         KeyDown="Window_KeyDown"
         Width="1340" Height="860" MinWidth="800" MinHeight="500"
         Background="{StaticResource BgBrush}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0"
+                             ResizeBorderThickness="6"
+                             GlassFrameThickness="0,0,0,1"
+                             CornerRadius="0"
+                             UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -26,7 +37,8 @@
         <Border Grid.Row="0"
                 Background="#13131F"
                 BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
-                Padding="24,14,24,14">
+                Padding="24,14,24,14"
+                MouseLeftButtonDown="Header_MouseLeftButtonDown">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -61,6 +73,29 @@
                             Click="Options_Click"
                             Style="{StaticResource ToolbarButtonStyle}"
                             Height="30" FontSize="12"/>
+
+                    <!-- Window caption buttons -->
+                    <Button Click="Minimize_Click"
+                            Style="{StaticResource CaptionButtonStyle}"
+                            Margin="14,0,0,0"
+                            ToolTip="Minimize">
+                        <Image Source="/Assets/Minimize.png" Width="25" Height="25"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Button>
+                    <Button Click="MaximizeRestore_Click"
+                            Style="{StaticResource CaptionButtonStyle}"
+                            Margin="6,0,0,0"
+                            ToolTip="Maximize">
+                        <Image Source="/Assets/Maximize.png" Width="25" Height="25"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Button>
+                    <Button Click="Close_Click"
+                            Style="{StaticResource CaptionButtonStyle}"
+                            Margin="6,0,0,0"
+                            ToolTip="Close">
+                        <Image Source="/Assets/Close.png" Width="25" Height="25"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
@@ -450,6 +485,14 @@
                            Foreground="#64748B" FontSize="13"
                            HorizontalAlignment="Center"/>
             </StackPanel>
+
+            <!-- Version label: decorative only, never intercepts clicks -->
+            <TextBlock x:Name="VersionText"
+                       HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                       Margin="0,0,12,8"
+                       Foreground="#E2E8F0" FontSize="11"
+                       Opacity="0.25"
+                       IsHitTestVisible="False"/>
 
         </Grid>
     </Grid>

@@ -9,6 +9,11 @@ public class ImageCacheService
 
     private static readonly Lazy<BitmapSource> _placeholder = new(CreatePlaceholder);
 
+    // SkiaSharp's native WebP decoder isn't safe to call from many threads at once —
+    // concurrent SKBitmap.Decode calls have caused native heap corruption crashes.
+    // Gate all decodes to one at a time; decoding ~40 small sprites sequentially is still fast.
+    private static readonly SemaphoreSlim _decodeGate = new(1, 1);
+
     /// <summary>
     /// Decodes a WebP sprite image. CPU work runs on a background thread;
     /// BitmapSource creation happens on the calling (UI) thread after the await.
@@ -18,7 +23,16 @@ public class ImageCacheService
         if (_cache.TryGetValue(path, out var weakRef) && weakRef.TryGetTarget(out var cached))
             return cached;
 
-        var pixels = await Task.Run(() => TryDecodePixels(path));
+        await _decodeGate.WaitAsync();
+        (byte[] buffer, int width, int height, int stride)? pixels;
+        try
+        {
+            pixels = await Task.Run(() => TryDecodePixels(path));
+        }
+        finally
+        {
+            _decodeGate.Release();
+        }
 
         BitmapSource bitmap;
         if (pixels is not null)

@@ -12,6 +12,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = viewModel;
         SetWindowIcon();
+        VersionText.Text = $"v{Models.PatchNotes.CurrentVersion}";
     }
 
     private void Options_Click(object sender, RoutedEventArgs e)
@@ -22,6 +23,23 @@ public partial class MainWindow : Window
         if (e.Key == Key.Escape && DataContext is MainViewModel vm)
             vm.ClearSearchCommand.Execute(null);
     }
+
+    private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount == 2)
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        else
+            DragMove();
+    }
+
+    private void Minimize_Click(object sender, RoutedEventArgs e)
+        => WindowState = WindowState.Minimized;
+
+    private void MaximizeRestore_Click(object sender, RoutedEventArgs e)
+        => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+    private void Close_Click(object sender, RoutedEventArgs e)
+        => Close();
 
     private static void SetWindowIcon()
     {

@@ -137,6 +137,7 @@
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="FilesTabBtn"        Content="FILES"        Style="{StaticResource TabBtnActiveStyle}" Click="FilesTab_Click"/>
                 <Button x:Name="InstructionsTabBtn" Content="INSTRUCTIONS" Style="{StaticResource TabBtnStyle}"       Click="InstructionsTab_Click"/>
+                <Button x:Name="PatchNotesTabBtn"   Content="PATCH NOTES"  Style="{StaticResource TabBtnStyle}"       Click="PatchNotesTab_Click"/>
             </StackPanel>
         </Border>
 
@@ -283,6 +284,67 @@ Filenames follow the pattern <Run Foreground="#E2E8F0" FontWeight="SemiBold">{Na
                             <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap">• Hit <Run Foreground="#E2E8F0">Refresh</Run> after dropping new files into the Sprites folder.</TextBlock>
                         </StackPanel>
                     </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ── PATCH NOTES TAB ───────────────────────────────────────── -->
+            <ScrollViewer x:Name="PatchNotesPanel"
+                          Visibility="Collapsed"
+                          VerticalScrollBarVisibility="Auto"
+                          Background="#0D0D15">
+                <StackPanel Margin="28,24,28,24">
+
+                    <TextBlock Text="CURRENT VERSION" Style="{StaticResource SectionHeadStyle}"/>
+                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🚀" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="CurrentVersionText"
+                                       Foreground="#7C3AED" FontSize="16" FontWeight="Bold"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="CHANGELOG" Style="{StaticResource SectionHeadStyle}"/>
+                    <ItemsControl x:Name="PatchNotesItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                            <TextBlock Text="{Binding Version, StringFormat='v{0}'}"
+                                                       Foreground="#E2E8F0" FontSize="14" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Date}"
+                                                       Foreground="#64748B" FontSize="11"
+                                                       VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                        <ItemsControl ItemsSource="{Binding Items}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="0,0,0,8">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Border Grid.Column="0"
+                                                                Background="{Binding Tag, Converter={StaticResource PatchNoteTagToBrushConverter}}"
+                                                                CornerRadius="4" Padding="7,3" Margin="0,1,10,0"
+                                                                VerticalAlignment="Top" HorizontalAlignment="Left">
+                                                            <TextBlock Text="{Binding Tag}" FontSize="10" FontWeight="Bold" Foreground="#0D0D15"/>
+                                                        </Border>
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding Text}"
+                                                                   Foreground="#CBD5E1" FontSize="12.5"
+                                                                   TextWrapping="Wrap" VerticalAlignment="Top"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
                 </StackPanel>
             </ScrollViewer>
