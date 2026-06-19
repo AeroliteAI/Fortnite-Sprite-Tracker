@@ -15,10 +15,28 @@ public class PatchNoteEntry
 
 public static class PatchNotes
 {
-    public const string CurrentVersion = "0.0.6";
+    public const string CurrentVersion = "0.0.8";
 
     public static readonly List<PatchNoteEntry> History =
     [
+        new PatchNoteEntry
+        {
+            Version = "0.0.8",
+            Date    = "2026-06-16",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Fixed", Text = "Installer now clears the Sprites folder before installing to prevent duplicate sprites on upgrade." },
+            ]
+        },
+        new PatchNoteEntry
+        {
+            Version = "0.0.7",
+            Date    = "2026-06-16",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Added",   Text = "New \"Incomplete\" filter button — shows sprites that haven't been both collected and mastered yet." },
+            ]
+        },
         new PatchNoteEntry
         {
             Version = "0.0.6",

@@ -133,11 +133,12 @@ public partial class MainViewModel : ObservableObject
         IsLoading = false;
     }
 
-    [RelayCommand] private void FilterAll()          => ActiveFilter = FilterMode.All;
-    [RelayCommand] private void FilterCollected()    => ActiveFilter = FilterMode.Collected;
-    [RelayCommand] private void FilterNotCollected() => ActiveFilter = FilterMode.NotCollected;
-    [RelayCommand] private void FilterMastered()     => ActiveFilter = FilterMode.Mastered;
-    [RelayCommand] private void FilterNotMastered()  => ActiveFilter = FilterMode.NotMastered;
+    [RelayCommand] private void FilterAll()                        => ActiveFilter = FilterMode.All;
+    [RelayCommand] private void FilterCollected()                  => ActiveFilter = FilterMode.Collected;
+    [RelayCommand] private void FilterNotCollected()               => ActiveFilter = FilterMode.NotCollected;
+    [RelayCommand] private void FilterMastered()                   => ActiveFilter = FilterMode.Mastered;
+    [RelayCommand] private void FilterNotMastered()                => ActiveFilter = FilterMode.NotMastered;
+    [RelayCommand] private void FilterIncomplete() => ActiveFilter = FilterMode.Incomplete;
     [RelayCommand] private void ClearSearch()        => SearchText   = string.Empty;
 
     [RelayCommand] private void GroupByVariant() => GroupMode = GroupMode.ByVariant;
@@ -270,11 +271,12 @@ public partial class MainViewModel : ObservableObject
 
     private bool MatchesFilter(SpriteCardViewModel card) => ActiveFilter switch
     {
-        FilterMode.Collected    =>  card.IsCollected,
-        FilterMode.NotCollected => !card.IsCollected,
-        FilterMode.Mastered     =>  card.IsMastered,
-        FilterMode.NotMastered  => !card.IsMastered,
-        _                       => true,
+        FilterMode.Collected                  =>  card.IsCollected,
+        FilterMode.NotCollected               => !card.IsCollected,
+        FilterMode.Mastered                   =>  card.IsMastered,
+        FilterMode.NotMastered                => !card.IsMastered,
+        FilterMode.Incomplete                  => !(card.IsCollected && card.IsMastered),
+        _                                     => true,
     };
 
     private static readonly Dictionary<string, int> RarityOrder = new(StringComparer.OrdinalIgnoreCase)

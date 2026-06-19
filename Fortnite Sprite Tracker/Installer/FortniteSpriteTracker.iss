@@ -1,5 +1,5 @@
 #define AppName "Fortnite Sprite Tracker"
-#define AppVersion "0.0.6"
+#define AppVersion "0.0.8"
 #define AppPublisher "Aerolite"
 #define AppExeName "FortniteSpriteTracker.exe"
 #define AppId "{{A3F2D8C1-7E4B-4F92-B035-6D1A2E9C4F87}"
@@ -38,6 +38,10 @@ Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription
 ; uninsneverdelete preserves user sprites/saves when uninstalling.
 Name: "{app}\Sprites"; Flags: uninsneveruninstall
 Name: "{app}\Data";    Flags: uninsneveruninstall
+
+[InstallDelete]
+; Wipe the Sprites folder before installing so upgrades don't leave stale/duplicate sprites.
+Type: filesandordirs; Name: "{app}\Sprites"
 
 [Files]
 Source: "AppFiles\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs

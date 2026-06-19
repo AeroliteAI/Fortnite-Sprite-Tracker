@@ -351,6 +351,21 @@
                     </Button.Style>
                 </Button>
 
+                <Button Content="Incomplete"
+                        Command="{Binding FilterIncompleteCommand}"
+                        Margin="0,0,6,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource FilterButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveFilter}" Value="Incomplete">
+                                    <Setter Property="Background" Value="#2A2A40"/>
+                                    <Setter Property="Foreground" Value="#CBD5E1"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
             </StackPanel>
 
             <!-- Scale slider (right-aligned) -->
