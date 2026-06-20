@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using Microsoft.Win32;
 using FortniteSpriteTracker.Models;
+using FortniteSpriteTracker.ViewModels;
 
 namespace FortniteSpriteTracker.Views;
 
@@ -16,6 +18,26 @@ public partial class OptionsWindow : Window
         if (File.Exists(AppPaths.Mastered))
             MasteredIcon.Source = new System.Windows.Media.Imaging.BitmapImage(
                 new Uri(AppPaths.Mastered, UriKind.Absolute));
+
+        if (DataContext is MainViewModel vm)
+            OverlayOutputPathText.Text = string.IsNullOrWhiteSpace(vm.OverlayOutputPath)
+                ? AppPaths.Base : vm.OverlayOutputPath;
+    }
+
+    private void BrowseOverlayOutput_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new OpenFolderDialog { Title = "Choose overlay output folder" };
+        if (dlg.ShowDialog() != true) return;
+        if (DataContext is not MainViewModel vm) return;
+        vm.OverlayOutputPath         = dlg.FolderName;
+        OverlayOutputPathText.Text   = dlg.FolderName;
+    }
+
+    private void ResetOverlayOutput_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainViewModel vm) return;
+        vm.OverlayOutputPath       = string.Empty;
+        OverlayOutputPathText.Text = AppPaths.Base;
     }
 
     private void FilesTab_Click(object sender, RoutedEventArgs e)

@@ -16,7 +16,7 @@ public partial class MainWindow : Window
     }
 
     private void Options_Click(object sender, RoutedEventArgs e)
-        => new OptionsWindow { Owner = this }.ShowDialog();
+        => new OptionsWindow { Owner = this, DataContext = DataContext }.ShowDialog();
 
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {

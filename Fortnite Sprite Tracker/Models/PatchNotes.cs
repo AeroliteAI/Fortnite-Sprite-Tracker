@@ -15,10 +15,53 @@ public class PatchNoteEntry
 
 public static class PatchNotes
 {
-    public const string CurrentVersion = "0.0.8";
+    public const string CurrentVersion = "0.1.2";
 
     public static readonly List<PatchNoteEntry> History =
     [
+        new PatchNoteEntry
+        {
+            Version = "0.1.2",
+            Date    = "2026-06-19",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Added",   Text = "Stream overlay server status indicator — glowing red/green dot and // Server Active / // Server Inactive label next to the version number." },
+                new PatchNoteItem { Tag = "Added",   Text = "Overlay output folder setting — choose where overlay.html is saved so OBS can find it easily." },
+                new PatchNoteItem { Tag = "Added",   Text = "Overlay scroll speed and server on/off toggle in Options → Files → Display." },
+                new PatchNoteItem { Tag = "Changed", Text = "Overlay server is now OFF by default — enable it in Options when needed." },
+                new PatchNoteItem { Tag = "Added",   Text = "Overlay now uses your custom rarity badge PNGs and crown icons instead of emoji." },
+                new PatchNoteItem { Tag = "Fixed",   Text = "Overlay clears automatically in OBS when the app is closed." },
+            ]
+        },
+        new PatchNoteEntry
+        {
+            Version = "0.1.1",
+            Date    = "2026-06-19",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Added",   Text = "Stream Overlay — click the Overlay button in the header to open a transparent always-on-top ticker for use in OBS." },
+                new PatchNoteItem { Tag = "Added",   Text = "Overlay scrolls horizontally and loops infinitely. Reflects the active filter live." },
+                new PatchNoteItem { Tag = "Added",   Text = "Overlay scroll speed is adjustable in Options → Files → Display." },
+            ]
+        },
+        new PatchNoteEntry
+        {
+            Version = "0.1.0",
+            Date    = "2026-06-16",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Added", Text = "Badge animation can now be toggled on or off in Options → Files → Display." },
+            ]
+        },
+        new PatchNoteEntry
+        {
+            Version = "0.0.9",
+            Date    = "2026-06-16",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Added", Text = "The SPECIAL rarity badge is now an animated WebP sequence with full transparency, cycling at 24fps." },
+            ]
+        },
         new PatchNoteEntry
         {
             Version = "0.0.8",

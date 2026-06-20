@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FortniteSpriteTracker.Services;
 
 namespace FortniteSpriteTracker.ViewModels;
 
@@ -14,7 +15,7 @@ public partial class SpriteCardViewModel : ObservableObject
     public string        SpriteType      { get; }
     public string        VariantCategory { get; }
     public string        Rarity          { get; }
-    public BitmapSource? RarityIcon      { get; set; }
+    [ObservableProperty] private BitmapSource? _rarityIcon;
     public bool          HasRarity       => !string.IsNullOrEmpty(Rarity);
 
     [ObservableProperty] private BitmapSource? _image;
@@ -46,6 +47,18 @@ public partial class SpriteCardViewModel : ObservableObject
         Rarity           = rarity;
         _masteredIcon    = masteredIcon;
         _notMasteredIcon = notMasteredIcon;
+
+        if (rarity == "SPECIAL")
+            SpecialBadgeAnimator.FrameChanged += OnSpecialFrameChanged;
+    }
+
+    private void OnSpecialFrameChanged()
+        => RarityIcon = SpecialBadgeAnimator.CurrentFrame;
+
+    internal void Cleanup()
+    {
+        if (Rarity == "SPECIAL")
+            SpecialBadgeAnimator.FrameChanged -= OnSpecialFrameChanged;
     }
 
     [RelayCommand]

@@ -24,6 +24,7 @@ public partial class MainViewModel : ObservableObject
     private Dictionary<string, BitmapSource> _rarityIcons = [];
 
     public ObservableCollection<SpriteGroupViewModel> DisplayedSprites { get; } = [];
+    public ObservableCollection<SpriteCardViewModel>  OverlayCards     { get; } = [];
 
 
     public IReadOnlyList<string> SortOptions { get; } =
@@ -54,6 +55,10 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string     _statusMessage            = string.Empty;
     [ObservableProperty] private int        _cardScalePercent         = 100;
     [ObservableProperty] private GroupMode  _groupMode                = GroupMode.ByVariant;
+    [ObservableProperty] private bool       _animateBadges        = true;
+    [ObservableProperty] private int        _overlayScrollSpeed   = 80;
+    [ObservableProperty] private bool       _overlayServerEnabled = false;
+    [ObservableProperty] private string     _overlayOutputPath    = string.Empty;
 
     public double CardScaleFactor => CardScalePercent / 100.0;
 
@@ -69,10 +74,36 @@ public partial class MainViewModel : ObservableObject
         SaveSettings();
     }
 
+    partial void OnAnimateBadgesChanged(bool value)
+    {
+        Services.SpecialBadgeAnimator.SetAnimating(value);
+        SaveSettings();
+    }
+
+    partial void OnOverlayScrollSpeedChanged(int value) { ApplyFilterAndSort(); SaveSettings(); }
+
+    partial void OnOverlayServerEnabledChanged(bool value)
+    {
+        if (value) Services.OverlayHttpServer.Start();
+        else       Services.OverlayHttpServer.Stop();
+        SaveSettings();
+    }
+
+    partial void OnOverlayOutputPathChanged(string value)
+    {
+        _ = Services.OverlayExportService.WriteHtmlAsync(value);
+        SaveSettings();
+    }
+
+
     private void SaveSettings() => _ = _appSettings.SaveAsync(new Models.AppSettings
     {
         CardScalePercent = CardScalePercent,
         GroupMode        = GroupMode,
+        AnimateBadges        = AnimateBadges,
+        OverlayScrollSpeed   = OverlayScrollSpeed,
+        OverlayServerEnabled = OverlayServerEnabled,
+        OverlayOutputPath    = OverlayOutputPath,
     });
 
     public MainViewModel(
@@ -96,9 +127,17 @@ public partial class MainViewModel : ObservableObject
         _notMasteredIcon = ImageCacheService.LoadCrownImage(AppPaths.NotMastered);
         _rarityIcons     = LoadRarityIcons();
 
+        await Services.SpecialBadgeAnimator.InitializeAsync(Path.Combine(AppPaths.Assets, "SPECIAL"));
+
         var settings     = await _appSettings.LoadAsync();
         CardScalePercent = settings.CardScalePercent;
         GroupMode        = settings.GroupMode;
+        AnimateBadges        = settings.AnimateBadges;
+        OverlayScrollSpeed   = settings.OverlayScrollSpeed;
+        OverlayServerEnabled = settings.OverlayServerEnabled;
+        OverlayOutputPath    = settings.OverlayOutputPath;
+
+        await Services.OverlayExportService.WriteHtmlAsync(OverlayOutputPath);
 
         var spriteModels = await _spriteLoader.LoadSpritesAsync(AppPaths.Sprites);
         var saveData     = await _collectionData.LoadAsync();
@@ -123,7 +162,10 @@ public partial class MainViewModel : ObservableObject
         var spriteModels = await _spriteLoader.LoadSpritesAsync(AppPaths.Sprites);
 
         foreach (var card in _allCards)
+        {
             card.StateChanged -= OnCardStateChanged;
+            card.Cleanup();
+        }
 
         _allCards = await BuildCardsAsync(spriteModels, snapshot);
 
@@ -132,6 +174,11 @@ public partial class MainViewModel : ObservableObject
 
         IsLoading = false;
     }
+
+    [RelayCommand] private void EnableBadgeAnimation()   => AnimateBadges        = true;
+    [RelayCommand] private void DisableBadgeAnimation()  => AnimateBadges        = false;
+    [RelayCommand] private void EnableOverlayServer()    => OverlayServerEnabled = true;
+    [RelayCommand] private void DisableOverlayServer()   => OverlayServerEnabled = false;
 
     [RelayCommand] private void FilterAll()                        => ActiveFilter = FilterMode.All;
     [RelayCommand] private void FilterCollected()                  => ActiveFilter = FilterMode.Collected;
@@ -155,7 +202,7 @@ public partial class MainViewModel : ObservableObject
     private Dictionary<string, BitmapSource> LoadRarityIcons()
     {
         var icons = new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
-        foreach (var name in new[] { "RARE", "EPIC", "LEGENDARY", "MYTHIC", "SPECIAL" })
+        foreach (var name in new[] { "RARE", "EPIC", "LEGENDARY", "MYTHIC" }) // SPECIAL uses animated frames
         {
             var path = Path.Combine(AppPaths.Assets, $"{name}.png");
             icons[name] = ImageCacheService.LoadCrownImage(path);
@@ -171,7 +218,9 @@ public partial class MainViewModel : ObservableObject
         {
             saveData.TryGetValue(m.FileName, out var data);
 
-            _rarityIcons.TryGetValue(m.Rarity, out var rarityIcon);
+            var rarityIcon = m.Rarity == "SPECIAL"
+                ? Services.SpecialBadgeAnimator.CurrentFrame
+                : (_rarityIcons.TryGetValue(m.Rarity, out var icon) ? icon : null);
 
             var card = new SpriteCardViewModel(
                 m.FileName,
@@ -258,6 +307,12 @@ public partial class MainViewModel : ObservableObject
         DisplayedSprites.Clear();
         foreach (var group in groups)
             DisplayedSprites.Add(group);
+
+        OverlayCards.Clear();
+        foreach (var card in sorted)
+            OverlayCards.Add(card);
+
+        _ = Services.OverlayExportService.WriteDataAsync(OverlayCards, OverlayScrollSpeed);
 
         IsFilteredEmpty = _allCards.Count > 0 && DisplayedSprites.Count == 0;
     }
