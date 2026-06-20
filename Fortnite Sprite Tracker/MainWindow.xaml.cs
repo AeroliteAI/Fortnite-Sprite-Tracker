@@ -1,5 +1,7 @@
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media.Animation;
+using FortniteSpriteTracker.Helpers;
 using FortniteSpriteTracker.ViewModels;
 using FortniteSpriteTracker.Views;
 
@@ -13,6 +15,13 @@ public partial class MainWindow : Window
         DataContext = viewModel;
         SetWindowIcon();
         VersionText.Text = $"v{Models.PatchNotes.CurrentVersion}";
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        NativeMethods.EnableRoundedCorners(hwnd);
+        NativeMethods.EnableAcrylic(hwnd);
     }
 
     private void Options_Click(object sender, RoutedEventArgs e)

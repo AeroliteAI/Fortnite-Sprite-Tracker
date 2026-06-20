@@ -14,7 +14,7 @@
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="#2A2A40"/>
-                <Setter Property="Background"  Value="#1A1A2E"/>
+                <Setter Property="Background"  Value="#0D1621"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsCollected}" Value="True">
                         <Setter Property="BorderBrush" Value="#4ADE80"/>
@@ -114,7 +114,7 @@
             </Grid.RowDefinitions>
 
             <!-- ── Image area ──────────────────────────────────────── -->
-            <Border Grid.Row="0" CornerRadius="6,6,0,0" ClipToBounds="True" Background="#12121F">
+            <Border Grid.Row="0" CornerRadius="6,6,0,0" ClipToBounds="True" Background="#0D1621">
                 <Grid>
                     <!-- Darkens only the image backdrop on hover; sprite is drawn on top and stays unaffected -->
                     <Border x:Name="ImageAreaDarken" CornerRadius="6,6,0,0" Background="Black" Opacity="0" IsHitTestVisible="False"/>
@@ -186,7 +186,7 @@
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="CrownBd"
-                                    Background="#22223A"
+                                    Background="#0D1621"
                                     BorderBrush="Transparent"
                                     BorderThickness="1"
                                     CornerRadius="8">
@@ -207,7 +207,7 @@
                 <!-- Collect toggle button -->
                 <Button Grid.Column="1"
                         Command="{Binding ToggleCollectedCommand}"
-                        Background="#22223A"
+                        Background="#0D1621"
                         Foreground="{Binding IsCollected, Converter={StaticResource BoolToCollectedForegroundConverter}}"
                         Content="{Binding IsCollected, Converter={StaticResource BoolToCollectedTextConverter}}"
                         BorderThickness="0"

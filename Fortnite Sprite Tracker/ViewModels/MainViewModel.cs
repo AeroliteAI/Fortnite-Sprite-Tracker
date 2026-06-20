@@ -56,6 +56,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private int        _cardScalePercent         = 100;
     [ObservableProperty] private GroupMode  _groupMode                = GroupMode.ByVariant;
     [ObservableProperty] private bool       _animateBadges        = true;
+    [ObservableProperty] private int        _panelOpacity         = 80;
     [ObservableProperty] private int        _overlayScrollSpeed   = 80;
     [ObservableProperty] private bool       _overlayServerEnabled = false;
     [ObservableProperty] private string     _overlayOutputPath    = string.Empty;
@@ -72,6 +73,27 @@ public partial class MainViewModel : ObservableObject
     {
         ApplyFilterAndSort();
         SaveSettings();
+    }
+
+    partial void OnPanelOpacityChanged(int value)
+    {
+        ApplyPanelOpacity(value);
+        SaveSettings();
+    }
+
+    private static void ApplyPanelOpacity(int percent)
+    {
+        var alpha = (byte)Math.Round(255 * Math.Clamp(percent, 0, 100) / 100.0);
+        Application.Current.Resources["PanelBrush"]    = MakeBrush(alpha, 0x05, 0x08, 0x0D);
+        Application.Current.Resources["PanelBrushAlt"] = MakeBrush(alpha, 0x0D, 0x16, 0x21);
+        Application.Current.Resources["CardBrush"]     = MakeBrush(alpha, 0x21, 0x38, 0x53);
+
+        static SolidColorBrush MakeBrush(byte a, byte r, byte g, byte b)
+        {
+            var br = new SolidColorBrush(Color.FromArgb(a, r, g, b));
+            br.Freeze();
+            return br;
+        }
     }
 
     partial void OnAnimateBadgesChanged(bool value)
@@ -101,6 +123,7 @@ public partial class MainViewModel : ObservableObject
         CardScalePercent = CardScalePercent,
         GroupMode        = GroupMode,
         AnimateBadges        = AnimateBadges,
+        PanelOpacity         = PanelOpacity,
         OverlayScrollSpeed   = OverlayScrollSpeed,
         OverlayServerEnabled = OverlayServerEnabled,
         OverlayOutputPath    = OverlayOutputPath,
@@ -133,6 +156,8 @@ public partial class MainViewModel : ObservableObject
         CardScalePercent = settings.CardScalePercent;
         GroupMode        = settings.GroupMode;
         AnimateBadges        = settings.AnimateBadges;
+        PanelOpacity         = settings.PanelOpacity;
+        ApplyPanelOpacity(PanelOpacity); // apply even if value matches default
         OverlayScrollSpeed   = settings.OverlayScrollSpeed;
         OverlayServerEnabled = settings.OverlayServerEnabled;
         OverlayOutputPath    = settings.OverlayOutputPath;

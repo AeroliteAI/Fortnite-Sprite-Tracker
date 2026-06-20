@@ -11,15 +11,17 @@
         Title="Sprite Tracker"
         KeyDown="Window_KeyDown"
         Width="1340" Height="860" MinWidth="800" MinHeight="500"
-        Background="{StaticResource BgBrush}"
+        Background="Transparent"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        ResizeMode="CanResize">
+        AllowsTransparency="True"
+        ResizeMode="CanResize"
+        Loaded="Window_Loaded">
 
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0"
                              ResizeBorderThickness="6"
-                             GlassFrameThickness="0,0,0,1"
+                             GlassFrameThickness="0"
                              CornerRadius="0"
                              UseAeroCaptionButtons="False"/>
     </shell:WindowChrome.WindowChrome>
@@ -35,7 +37,7 @@
 
         <!-- ══ HEADER ════════════════════════════════════════════════════════ -->
         <Border Grid.Row="0"
-                Background="#13131F"
+                Background="{DynamicResource PanelBrush}"
                 BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
                 Padding="24,14,24,14"
                 MouseLeftButtonDown="Header_MouseLeftButtonDown">
@@ -102,7 +104,7 @@
 
         <!-- ══ STATS BAR ══════════════════════════════════════════════════════ -->
         <Border Grid.Row="1"
-                Background="#16162A"
+                Background="{DynamicResource PanelBrush}"
                 BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
                 Padding="24,12,24,12">
             <Grid>
@@ -177,7 +179,7 @@
 
         <!-- ══ TOOLBAR ════════════════════════════════════════════════════════ -->
         <Border Grid.Row="2"
-                Background="#13131F"
+                Background="{DynamicResource PanelBrush}"
                 BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
                 Padding="20,10,20,10">
             <Grid>
@@ -271,7 +273,7 @@
 
         <!-- ══ FILTER ROW ════════════════════════════════════════════════════ -->
         <Border Grid.Row="3"
-                Background="#10101C"
+                Background="{DynamicResource PanelBrush}"
                 BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
                 Padding="20,8,20,8">
             <Grid>
@@ -387,7 +389,7 @@
         </Border>
 
         <!-- ══ SPRITE GRID ═══════════════════════════════════════════════════ -->
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="4" Background="{DynamicResource PanelBrushAlt}">
 
             <!-- Sprite cards -->
             <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -503,7 +505,7 @@
 
             <!-- Server status + version label -->
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                        Orientation="Horizontal" Margin="0,0,12,8"
+                        Orientation="Horizontal" Margin="0,0,16,2"
                         IsHitTestVisible="False">
 
                 <!-- Glow dot -->

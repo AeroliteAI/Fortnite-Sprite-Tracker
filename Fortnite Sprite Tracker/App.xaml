@@ -6,6 +6,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/DarkTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <!-- Defined here (not in DarkTheme.xaml) so slider updates via
+                 Application.Current.Resources reach ALL windows, including
+                 OptionsWindow which has its own local DarkTheme.xaml merge. -->
+            <SolidColorBrush x:Key="PanelBrush"    Color="#CC05080D"/>
+            <SolidColorBrush x:Key="PanelBrushAlt" Color="#CC0D1621"/>
+            <SolidColorBrush x:Key="CardBrush"      Color="#CC213853"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

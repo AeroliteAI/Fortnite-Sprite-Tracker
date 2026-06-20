@@ -15,10 +15,22 @@ public class PatchNoteEntry
 
 public static class PatchNotes
 {
-    public const string CurrentVersion = "0.1.2";
+    public const string CurrentVersion = "0.1.3";
 
     public static readonly List<PatchNoteEntry> History =
     [
+        new PatchNoteEntry
+        {
+            Version = "0.1.3",
+            Date    = "2026-06-20",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Added",   Text = "Acrylic glass effect on both the main window and Options window with Windows 11 rounded corners." },
+                new PatchNoteItem { Tag = "Added",   Text = "Window Opacity slider in Options → Files → Display to control panel transparency." },
+                new PatchNoteItem { Tag = "Added",   Text = "Layered background colors: #05080D for toolbars, #0D1621 for card grid, #213853 for Options inner cards." },
+                new PatchNoteItem { Tag = "Changed", Text = "Options window now uses a custom draggable header with a close button matching the main window style." },
+            ]
+        },
         new PatchNoteEntry
         {
             Version = "0.1.2",

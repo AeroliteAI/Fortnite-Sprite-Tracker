@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Windows.Interop;
 using Microsoft.Win32;
+using FortniteSpriteTracker.Helpers;
 using FortniteSpriteTracker.Models;
 using FortniteSpriteTracker.ViewModels;
 
@@ -39,6 +41,18 @@ public partial class OptionsWindow : Window
         vm.OverlayOutputPath       = string.Empty;
         OverlayOutputPathText.Text = AppPaths.Base;
     }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        NativeMethods.EnableRoundedCorners(hwnd);
+        NativeMethods.EnableAcrylic(hwnd);
+    }
+
+    private void Header_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        => DragMove();
+
+    private void CloseOptions_Click(object sender, RoutedEventArgs e) => Close();
 
     private void FilesTab_Click(object sender, RoutedEventArgs e)
     {

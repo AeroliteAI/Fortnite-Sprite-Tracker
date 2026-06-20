@@ -6,14 +6,13 @@
         MinWidth="480" MinHeight="440"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
-        Background="#0D0D15"
-        WindowStyle="SingleBorderWindow">
+        Background="Transparent"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Styles/DarkTheme.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
 
             <!-- Tab button: inactive -->
             <Style x:Key="TabBtnStyle" TargetType="Button">
@@ -117,22 +116,38 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="5"
+                      CaptionHeight="0"
+                      GlassFrameThickness="0"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
     <DockPanel>
 
         <!-- ── Header ──────────────────────────────────────────────────────── -->
         <Border DockPanel.Dock="Top"
-                Background="#13131F"
+                Background="{DynamicResource PanelBrush}"
                 BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
-                Padding="24,16">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="⚙" Foreground="#7C3AED" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                <TextBlock Text="OPTIONS" Foreground="#E2E8F0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-            </StackPanel>
+                Padding="24,16"
+                MouseLeftButtonDown="Header_MouseLeftButtonDown">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <TextBlock Text="⚙" Foreground="#7C3AED" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="OPTIONS" Foreground="#E2E8F0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Click="CloseOptions_Click"
+                        Style="{StaticResource CaptionButtonStyle}">
+                    <Image Source="/Assets/Close.png" Width="20" Height="20"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Button>
+            </Grid>
         </Border>
 
         <!-- ── Tab strip ───────────────────────────────────────────────────── -->
         <Border DockPanel.Dock="Top"
-                Background="#13131F"
+                Background="{DynamicResource PanelBrush}"
                 BorderBrush="#2A2A40" BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="FilesTabBtn"        Content="FILES"        Style="{StaticResource TabBtnActiveStyle}" Click="FilesTab_Click"/>
@@ -147,13 +162,13 @@
             <!-- ── FILES TAB ─────────────────────────────────────────────── -->
             <ScrollViewer x:Name="FilesPanel"
                           VerticalScrollBarVisibility="Auto"
-                          Background="#0D0D15">
+                          Background="{DynamicResource PanelBrushAlt}">
                 <StackPanel Margin="28,24,28,24">
 
                     <TextBlock Text="DATA LOCATIONS" Style="{StaticResource SectionHeadStyle}"/>
 
                     <!-- Sprites folder -->
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,16">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                 <TextBlock Text="📁" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -167,7 +182,7 @@
                     </Border>
 
                     <!-- Data folder -->
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,16">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                 <TextBlock Text="💾" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -182,7 +197,7 @@
 
                     <!-- Display settings -->
                     <TextBlock Text="DISPLAY" Style="{StaticResource SectionHeadStyle}" Margin="0,8,0,8"/>
-                    <Border Background="#13131F" CornerRadius="8" Padding="16">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -222,8 +237,33 @@
                     </Border>
 
 
+                    <!-- Blur opacity -->
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,8,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="Window Opacity" Foreground="#E2E8F0" FontSize="13" FontWeight="SemiBold"/>
+                                <TextBlock Text="Controls how transparent the whole window is. Lower = more blur shows through." Foreground="#64748B" FontSize="11" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                                <Slider Minimum="10" Maximum="100"
+                                        SmallChange="5" LargeChange="10"
+                                        TickFrequency="5" IsSnapToTickEnabled="True"
+                                        Value="{Binding PanelOpacity}"
+                                        Width="160" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding PanelOpacity, StringFormat={}{0}%}"
+                                           Foreground="#E2E8F0" FontSize="12"
+                                           Width="42" TextAlignment="Right"
+                                           VerticalAlignment="Center" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
                     <!-- Overlay output folder -->
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,8,0,0">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,8,0,0">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                 <TextBlock Text="📁" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -243,7 +283,7 @@
                     </Border>
 
                     <!-- Overlay scroll speed -->
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,8,0,0">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,8,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -268,7 +308,7 @@
                     </Border>
 
                     <!-- Overlay server toggle -->
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,8,0,0">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,8,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -314,7 +354,7 @@
             <ScrollViewer x:Name="InstructionsPanel"
                           Visibility="Collapsed"
                           VerticalScrollBarVisibility="Auto"
-                          Background="#0D0D15">
+                          Background="{DynamicResource PanelBrushAlt}">
                 <StackPanel Margin="28,24,28,24">
 
                     <!-- How it works -->
@@ -323,7 +363,7 @@
 Place <Run Foreground="#E2E8F0" FontWeight="SemiBold">.webp</Run> image files in your Sprites folder and hit <Run Foreground="#E2E8F0" FontWeight="SemiBold">Refresh</Run>. The app reads the filename, strips the rarity keyword, groups sprites by variant, and lets you track two states per sprite:
                     </TextBlock>
 
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,20">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                 <TextBlock Text="✓" Foreground="#4ADE80" FontSize="13" FontWeight="Bold" Width="24"/>
@@ -351,7 +391,7 @@ Filenames follow the pattern <Run Foreground="#E2E8F0" FontWeight="SemiBold">{Na
                     </TextBlock>
 
                     <!-- Rarity keywords -->
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,16">
                         <StackPanel>
                             <TextBlock Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,10">VALID RARITY KEYWORDS (must be ALL CAPS)</TextBlock>
                             <StackPanel Orientation="Horizontal">
@@ -375,7 +415,7 @@ Filenames follow the pattern <Run Foreground="#E2E8F0" FontWeight="SemiBold">{Na
                     </Border>
 
                     <!-- Naming examples -->
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,16">
                         <StackPanel>
 
                             <TextBlock Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,10">BASE SPRITES</TextBlock>
@@ -401,7 +441,7 @@ Filenames follow the pattern <Run Foreground="#E2E8F0" FontWeight="SemiBold">{Na
 
                     <!-- Tips -->
                     <TextBlock Text="TIPS" Style="{StaticResource SectionHeadStyle}" Margin="0,4,0,8"/>
-                    <Border Background="#13131F" CornerRadius="8" Padding="16">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16">
                         <StackPanel>
                             <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8">• Only <Run Foreground="#E2E8F0">.webp</Run> files are loaded — other formats are ignored.</TextBlock>
                             <TextBlock Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8">• The rarity keyword must be <Run Foreground="#E2E8F0">ALL CAPS</Run> and placed between the sprite name and variant suffix.</TextBlock>
@@ -419,11 +459,11 @@ Filenames follow the pattern <Run Foreground="#E2E8F0" FontWeight="SemiBold">{Na
             <ScrollViewer x:Name="PatchNotesPanel"
                           Visibility="Collapsed"
                           VerticalScrollBarVisibility="Auto"
-                          Background="#0D0D15">
+                          Background="{DynamicResource PanelBrushAlt}">
                 <StackPanel Margin="28,24,28,24">
 
                     <TextBlock Text="CURRENT VERSION" Style="{StaticResource SectionHeadStyle}"/>
-                    <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,20">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🚀" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock x:Name="CurrentVersionText"
@@ -436,7 +476,7 @@ Filenames follow the pattern <Run Foreground="#E2E8F0" FontWeight="SemiBold">{Na
                     <ItemsControl x:Name="PatchNotesItemsControl">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#13131F" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                <Border Background="{DynamicResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,16">
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                             <TextBlock Text="{Binding Version, StringFormat='v{0}'}"
