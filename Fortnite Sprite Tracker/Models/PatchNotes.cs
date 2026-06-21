@@ -15,10 +15,19 @@ public class PatchNoteEntry
 
 public static class PatchNotes
 {
-    public const string CurrentVersion = "0.2.1";
+    public const string CurrentVersion = "0.2.2";
 
     public static readonly List<PatchNoteEntry> History =
     [
+        new PatchNoteEntry
+        {
+            Version = "0.2.2",
+            Date    = "2026-06-21",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Changed", Text = "Server status indicator dot reduced to 50% size." },
+            ]
+        },
         new PatchNoteEntry
         {
             Version = "0.2.1",

@@ -1,5 +1,5 @@
 #define AppName "Fortnite Sprite Tracker"
-#define AppVersion "0.2.1"
+#define AppVersion "0.2.2"
 #define AppPublisher "Aerolite"
 #define AppExeName "FortniteSpriteTracker.exe"
 #define AppId "{{A3F2D8C1-7E4B-4F92-B035-6D1A2E9C4F87}"
