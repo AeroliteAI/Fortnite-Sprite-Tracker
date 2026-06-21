@@ -15,6 +15,7 @@ AllowNoIcons=yes
 OutputDir=Output
 OutputBaseFilename=FortniteSpriteTrackerSetup_v{#AppVersion}
 SetupIconFile=AppFiles\Assets\FNTracker.ico
+LicenseFile=DISCLAIMER.txt
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern

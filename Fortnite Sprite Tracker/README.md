@@ -1,6 +1,6 @@
 # Fortnite Sprite Tracker
 
-![Fortnite Sprite Tracker](screenshots/Main.png)
+![Fortnite Sprite Tracker](Screenshots/Main.png)
 
 A Windows desktop app for tracking your Fortnite sprite collection. Mark sprites as Collected or Mastered, filter and sort your progress, and display your collection live on stream via an OBS browser source overlay.
 
@@ -85,6 +85,12 @@ The overlay reflects your active filter live — switch filters in the app and O
 
 ---
 
+## Disclaimer
+
+> **Use at your own risk.** This app is provided as-is with no warranty of any kind. The developer is not responsible for any damage, data loss, or issues caused to your computer or system by installing or using this software. By downloading and running this app you accept full responsibility for any consequences.
+
+---
+
 ## Credits
 
-Built by **Aerolite** using [Avalonia UI](https://avaloniaui.net/) and [SkiaSharp](https://github.com/mono/SkiaSharp).
+Built by **Aerolite** — **Vibe Coded** using [Avalonia UI](https://avaloniaui.net/) and [SkiaSharp](https://github.com/mono/SkiaSharp).
