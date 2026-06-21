@@ -1,24 +1,22 @@
+using System.Runtime.InteropServices;
+using Avalonia;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using SkiaSharp;
 
 namespace FortniteSpriteTracker.Services;
 
 public class ImageCacheService
 {
-    private readonly Dictionary<string, WeakReference<BitmapSource>> _cache
+    private readonly Dictionary<string, WeakReference<Bitmap>> _cache
         = new(StringComparer.OrdinalIgnoreCase);
 
-    private static readonly Lazy<BitmapSource> _placeholder = new(CreatePlaceholder);
+    private static readonly Lazy<Bitmap> _placeholder = new(CreatePlaceholder);
 
-    // SkiaSharp's native WebP decoder isn't safe to call from many threads at once —
-    // concurrent SKBitmap.Decode calls have caused native heap corruption crashes.
-    // Gate all decodes to one at a time; decoding ~40 small sprites sequentially is still fast.
+    // SkiaSharp's native WebP decoder isn't safe to call from many threads at once.
     private static readonly SemaphoreSlim _decodeGate = new(1, 1);
 
-    /// <summary>
-    /// Decodes a WebP sprite image. CPU work runs on a background thread;
-    /// BitmapSource creation happens on the calling (UI) thread after the await.
-    /// </summary>
-    public async Task<BitmapSource> GetImageAsync(string path)
+    public async Task<Bitmap> GetImageAsync(string path)
     {
         if (_cache.TryGetValue(path, out var weakRef) && weakRef.TryGetTarget(out var cached))
             return cached;
@@ -34,91 +32,61 @@ public class ImageCacheService
             _decodeGate.Release();
         }
 
-        BitmapSource bitmap;
-        if (pixels is not null)
-        {
-            var (buffer, width, height, stride) = pixels.Value;
-            bitmap = BitmapSource.Create(width, height, 96, 96,
-                PixelFormats.Bgra32, null, buffer, stride);
-            bitmap.Freeze();
-        }
-        else
-        {
-            bitmap = _placeholder.Value;
-        }
+        var bitmap = pixels is not null
+            ? CreateBitmap(pixels.Value.buffer, pixels.Value.width, pixels.Value.height, pixels.Value.stride)
+            : _placeholder.Value;
 
-        _cache[path] = new WeakReference<BitmapSource>(bitmap);
+        _cache[path] = new WeakReference<Bitmap>(bitmap);
         return bitmap;
     }
 
-    /// <summary>
-    /// Loads a standard PNG/JPG crown image using WPF's native decoder.
-    /// Must be called on the UI thread.
-    /// </summary>
-    public static BitmapSource LoadCrownImage(string path)
+    // Loads a PNG from the embedded AvaloniaResource (avares://FortniteSpriteTracker/Assets/...)
+    public static Bitmap LoadAssetImage(string assetFileName)
     {
-        if (!File.Exists(path))
-            return _placeholder.Value;
-
         try
         {
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource   = new Uri(path, UriKind.Absolute);
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.EndInit();
-            bitmap.Freeze();
-            return bitmap;
+            var uri    = new Uri($"avares://FortniteSpriteTracker/Assets/{assetFileName}");
+            using var stream = Avalonia.Platform.AssetLoader.Open(uri);
+            return new Bitmap(stream);
         }
-        catch
-        {
-            return _placeholder.Value;
-        }
+        catch { return _placeholder.Value; }
     }
 
-    // Runs on background thread — returns raw BGRA pixel data; no WPF objects created here.
+    private static Bitmap CreateBitmap(byte[] buffer, int width, int height, int stride)
+    {
+        var bmp = new WriteableBitmap(
+            new PixelSize(width, height),
+            new Vector(96, 96),
+            PixelFormat.Bgra8888,
+            AlphaFormat.Unpremul);
+        using var fb = bmp.Lock();
+        Marshal.Copy(buffer, 0, fb.Address, buffer.Length);
+        return bmp;
+    }
+
     private static (byte[] buffer, int width, int height, int stride)? TryDecodePixels(string path)
     {
-        if (!File.Exists(path))
-            return null;
-
+        if (!File.Exists(path)) return null;
         try
         {
             using var decoded = SKBitmap.Decode(path);
-            if (decoded is null)
-                return null;
+            if (decoded is null) return null;
 
-            // Ensure BGRA8888 layout so bytes map directly to WPF's Bgra32 pixel format
             SKBitmap? converted = null;
             var source = decoded;
             if (decoded.ColorType != SKColorType.Bgra8888)
             {
                 converted = decoded.Copy(SKColorType.Bgra8888);
-                if (converted is null)
-                    return null;
+                if (converted is null) return null;
                 source = converted;
             }
 
-            try
-            {
-                return (source.Bytes, source.Width, source.Height, source.RowBytes);
-            }
-            finally
-            {
-                converted?.Dispose();
-            }
+            try   { return (source.Bytes, source.Width, source.Height, source.RowBytes); }
+            finally { converted?.Dispose(); }
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
-    private static BitmapSource CreatePlaceholder()
-    {
-        var bmp = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null,
-            new byte[] { 42, 42, 60, 255 }, 4);
-        bmp.Freeze();
-        return bmp;
-    }
+    private static Bitmap CreatePlaceholder()
+        => CreateBitmap(new byte[] { 42, 42, 60, 255 }, 1, 1, 4);
 }

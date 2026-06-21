@@ -1,5 +1,5 @@
 using System.Text.Json;
-using FortniteSpriteTracker.ViewModels;
+using FortniteSpriteTracker.Models;
 
 namespace FortniteSpriteTracker.Services;
 
@@ -7,7 +7,7 @@ public static class OverlayExportService
 {
     private static readonly JsonSerializerOptions _json = new() { WriteIndented = false };
 
-    public static async Task WriteDataAsync(IEnumerable<SpriteCardViewModel> cards, int scrollSpeed = 80)
+    public static async Task WriteDataAsync(IEnumerable<OverlayCardData> cards, int scrollSpeed = 80)
     {
         try
         {

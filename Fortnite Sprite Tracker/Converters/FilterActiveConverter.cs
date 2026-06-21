@@ -1,19 +1,14 @@
 using System.Globalization;
-using System.Windows.Data;
-using FortniteSpriteTracker.Models;
+using Avalonia.Data.Converters;
 
 namespace FortniteSpriteTracker.Converters;
 
+// Generic "value equals parameter" converter — works for FilterMode, GroupMode, or any enum.
 public class FilterActiveConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (value is FilterMode current && parameter is string param &&
-            Enum.TryParse<FilterMode>(param, out var target))
-            return current == target;
-        return false;
-    }
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is not null && parameter is not null && value.ToString() == parameter.ToString();
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }

@@ -1,36 +1,23 @@
+using System.Runtime.InteropServices;
+using Avalonia;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Avalonia.Threading;
 using SkiaSharp;
-using System.Windows.Threading;
 
 namespace FortniteSpriteTracker.Services;
 
-// Loads the SPECIAL rarity badge WebP image sequence and drives a shared
-// DispatcherTimer so every SPECIAL card animates in sync from one frame source.
 public static class SpecialBadgeAnimator
 {
-    private const int TargetHeight = 48; // 4x the 12px display size — crisp at high DPI
-    private const int Fps          = 24; // 120 frames / 5 s
+    private const int TargetHeight = 48;
+    private const int Fps          = 24;
 
-    private static BitmapSource[] _frames = [];
-    private static int            _currentIndex;
+    private static Bitmap[] _frames = [];
+    private static int       _currentIndex;
     private static DispatcherTimer? _timer;
 
     public static event Action? FrameChanged;
-
-    public static void SetAnimating(bool enabled)
-    {
-        if (_timer is null) return;
-        if (enabled == _timer.IsEnabled) return;
-        if (enabled)
-            _timer.Start();
-        else
-        {
-            _timer.Stop();
-            _currentIndex = 0;
-            FrameChanged?.Invoke();
-        }
-    }
-
-    public static BitmapSource? CurrentFrame =>
+    public static Bitmap? CurrentFrame =>
         _frames.Length > 0 ? _frames[_currentIndex] : null;
 
     public static async Task InitializeAsync(string framesFolder)
@@ -42,25 +29,19 @@ public static class SpecialBadgeAnimator
                              .ToArray();
         if (files.Length == 0) return;
 
-        // Decode + resize all frames on a background thread
-        var pixelData = await Task.Run(() =>
-            files.Select(TryDecodePixels).ToArray());
+        var pixelData = await Task.Run(() => files.Select(TryDecodePixels).ToArray());
 
-        // Create frozen BitmapSources on the UI thread (back here after await)
-        var frames = new List<BitmapSource>(pixelData.Length);
+        var frames = new List<Bitmap>(pixelData.Length);
         foreach (var p in pixelData)
         {
             if (p is null) continue;
-            var bmp = BitmapSource.Create(p.Value.W, p.Value.H, 96, 96,
-                PixelFormats.Bgra32, null, p.Value.Buffer, p.Value.Stride);
-            bmp.Freeze();
-            frames.Add(bmp);
+            frames.Add(CreateBitmap(p.Value.Buffer, p.Value.W, p.Value.H, p.Value.Stride));
         }
         if (frames.Count == 0) return;
 
         _frames = [.. frames];
 
-        _timer = new DispatcherTimer(DispatcherPriority.Render)
+        _timer = new DispatcherTimer(DispatcherPriority.Background)
         {
             Interval = TimeSpan.FromMilliseconds(1000.0 / Fps)
         };
@@ -70,6 +51,19 @@ public static class SpecialBadgeAnimator
             FrameChanged?.Invoke();
         };
         _timer.Start();
+    }
+
+    public static void SetAnimating(bool enabled)
+    {
+        if (_timer is null) return;
+        if (enabled == _timer.IsEnabled) return;
+        if (enabled) _timer.Start();
+        else
+        {
+            _timer.Stop();
+            _currentIndex = 0;
+            FrameChanged?.Invoke();
+        }
     }
 
     private static (byte[] Buffer, int W, int H, int Stride)? TryDecodePixels(string path)
@@ -100,5 +94,17 @@ public static class SpecialBadgeAnimator
             finally { converted?.Dispose(); }
         }
         catch { return null; }
+    }
+
+    private static Bitmap CreateBitmap(byte[] buffer, int width, int height, int stride)
+    {
+        var bmp = new WriteableBitmap(
+            new PixelSize(width, height),
+            new Vector(96, 96),
+            PixelFormat.Bgra8888,
+            AlphaFormat.Unpremul);
+        using var fb = bmp.Lock();
+        Marshal.Copy(buffer, 0, fb.Address, buffer.Length);
+        return bmp;
     }
 }

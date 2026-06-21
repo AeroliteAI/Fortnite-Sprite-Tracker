@@ -1,3 +1,4 @@
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -5,9 +6,9 @@ namespace FortniteSpriteTracker.ViewModels;
 
 public partial class SpriteGroupViewModel : ObservableObject
 {
-    public string Header { get; }
-    public string Color  { get; }
-    public int    Count  => Cards.Count;
+    public string Header     { get; }
+    public IBrush GroupBrush { get; }
+    public int    Count      => Cards.Count;
 
     [ObservableProperty] private bool _isExpanded = true;
 
@@ -15,16 +16,16 @@ public partial class SpriteGroupViewModel : ObservableObject
 
     public SpriteGroupViewModel(string header, bool isExpanded = true)
     {
-        Header = header;
+        Header     = header;
         IsExpanded = isExpanded;
-        Color  = header switch
+        GroupBrush = new SolidColorBrush(Avalonia.Media.Color.Parse(header switch
         {
             "Normal" => "#94A3B8",
             "Gold"   => "#F59E0B",
             "Gummy"  => "#EC4899",
             "Galaxy" => "#818CF8",
-            _        => "#22D3EE",   // cyan fallback for any future variant
-        };
+            _        => "#22D3EE",
+        }));
     }
 
     [RelayCommand]

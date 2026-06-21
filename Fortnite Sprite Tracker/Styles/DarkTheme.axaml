@@ -1,0 +1,25 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:FortniteSpriteTracker.Converters">
+
+    <!-- ── Converters ─────────────────────────────────────────────────────── -->
+    <converters:BoolToVisibleConverter              x:Key="BoolToVisibleConverter"/>
+    <converters:BoolToCollectedBrushConverter       x:Key="BoolToCollectedBrushConverter"/>
+    <converters:BoolToCollectedTextConverter        x:Key="BoolToCollectedTextConverter"/>
+    <converters:BoolToCollectedForegroundConverter  x:Key="BoolToCollectedForegroundConverter"/>
+    <converters:FilterActiveConverter               x:Key="FilterActiveConverter"/>
+    <converters:InverseBoolConverter                x:Key="InverseBoolConverter"/>
+    <converters:BoolToExpandArrowConverter          x:Key="BoolToExpandArrowConverter"/>
+    <converters:PatchNoteTagToBrushConverter        x:Key="PatchNoteTagToBrushConverter"/>
+
+    <!-- ── Base colour palette ────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="BgBrush"       Color="#0D0D15"/>
+    <SolidColorBrush x:Key="TextPrimBrush" Color="#E2E8F0"/>
+    <SolidColorBrush x:Key="TextMutedBrush" Color="#94A3B8"/>
+    <SolidColorBrush x:Key="GreenBrush"    Color="#4ADE80"/>
+    <SolidColorBrush x:Key="AmberBrush"    Color="#F59E0B"/>
+    <SolidColorBrush x:Key="PurpleBrush"   Color="#7C3AED"/>
+    <SolidColorBrush x:Key="Purple2Brush"  Color="#5B21B6"/>
+    <SolidColorBrush x:Key="BorderBrush2"  Color="#2A2A40"/>
+
+</ResourceDictionary>

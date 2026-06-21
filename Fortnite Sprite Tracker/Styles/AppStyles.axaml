@@ -1,0 +1,244 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:media="clr-namespace:Avalonia.Media;assembly=Avalonia.Base">
+
+    <!-- ── Remove font shadows/strokes from all text elements ─────────────── -->
+    <Style Selector="TextBlock">
+        <Setter Property="Effect"          Value="{x:Null}"/>
+    </Style>
+    <Style Selector="TextBox">
+        <Setter Property="Effect" Value="{x:Null}"/>
+    </Style>
+
+    <!-- ── Filter / Group buttons (custom template for reliable border control) -->
+    <Style Selector="Button.filterBtn">
+        <Setter Property="Foreground" Value="#94A3B8"/>
+        <Setter Property="FontSize"   Value="12"/>
+        <Setter Property="Cursor"     Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border Name="Root"
+                            Background="#22223A"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12,6">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          FontSize="{TemplateBinding FontSize}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style Selector="Button.filterBtn:pointerover /template/ Border#Root">
+        <Setter Property="Background"  Value="#2A2A45"/>
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+    </Style>
+    <!-- Default active: purple -->
+    <Style Selector="Button.filterBtn.active /template/ Border#Root">
+        <Setter Property="Background" Value="#7C3AED"/>
+    </Style>
+    <Style Selector="Button.filterBtn.active">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <!-- Collected active: green -->
+    <Style Selector="Button.filterCollected.active /template/ Border#Root">
+        <Setter Property="Background" Value="#166534"/>
+    </Style>
+    <Style Selector="Button.filterCollected.active">
+        <Setter Property="Foreground" Value="#4ADE80"/>
+    </Style>
+    <!-- NotCollected active: blue -->
+    <Style Selector="Button.filterNotCollected.active /template/ Border#Root">
+        <Setter Property="Background" Value="#1A2D42"/>
+    </Style>
+    <Style Selector="Button.filterNotCollected.active">
+        <Setter Property="Foreground" Value="#60A5FA"/>
+    </Style>
+    <!-- Mastered active: amber -->
+    <Style Selector="Button.filterMastered.active /template/ Border#Root">
+        <Setter Property="Background" Value="#78350F"/>
+    </Style>
+    <Style Selector="Button.filterMastered.active">
+        <Setter Property="Foreground" Value="#F59E0B"/>
+    </Style>
+    <!-- NotMastered active: red -->
+    <Style Selector="Button.filterNotMastered.active /template/ Border#Root">
+        <Setter Property="Background" Value="#2E1A1A"/>
+    </Style>
+    <Style Selector="Button.filterNotMastered.active">
+        <Setter Property="Foreground" Value="#F87171"/>
+    </Style>
+    <!-- Completed active: green -->
+    <Style Selector="Button.filterCompleted.active /template/ Border#Root">
+        <Setter Property="Background" Value="#166534"/>
+    </Style>
+    <Style Selector="Button.filterCompleted.active">
+        <Setter Property="Foreground" Value="#4ADE80"/>
+    </Style>
+
+    <!-- ── Toolbar buttons ──────────────────────────────────────────────────── -->
+    <Style Selector="Button.toolbarBtn">
+        <Setter Property="Background"      Value="#22223A"/>
+        <Setter Property="Foreground"      Value="#E2E8F0"/>
+        <Setter Property="BorderBrush"     Value="#3A3A5C"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding"         Value="14,7"/>
+        <Setter Property="FontSize"        Value="12"/>
+        <Setter Property="CornerRadius"    Value="6"/>
+        <Setter Property="Cursor"          Value="Hand"/>
+    </Style>
+    <Style Selector="Button.toolbarBtn:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#2A2A45"/>
+    </Style>
+    <Style Selector="Button.toolbarBtn:pointerover">
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+    </Style>
+    <Style Selector="Button.toolbarBtn:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="#3D2A6B"/>
+    </Style>
+
+    <!-- ── Caption buttons (minimize / maximize / close) ─────────────────── -->
+    <Style Selector="Button.captionBtn">
+        <Setter Property="Background"      Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Width"           Value="40"/>
+        <Setter Property="Height"          Value="40"/>
+        <Setter Property="Cursor"          Value="Hand"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+        <Setter Property="RenderTransform" Value="scale(1)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.12"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button.captionBtn:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.18)"/>
+    </Style>
+    <Style Selector="Button.captionBtn /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- ── Sprite card buttons (full custom template to override FluentTheme) ─ -->
+    <Style Selector="Button.crownBtn">
+        <Setter Property="Cursor"  Value="Hand"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment"   Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border Name="Root"
+                            Background="#8022223A"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style Selector="Button.crownBtn:pointerover /template/ Border#Root">
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+    </Style>
+
+    <Style Selector="Button.collectBtn">
+        <Setter Property="Cursor"              Value="Hand"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment"   Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border Name="Root"
+                            Background="#8022223A"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   FontFamily="Arial Black"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style Selector="Button.collectBtn:pointerover /template/ Border#Root">
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+        <Setter Property="Opacity"     Value="0.82"/>
+    </Style>
+    <Style Selector="Button.collectBtn:pressed /template/ Border#Root">
+        <Setter Property="Opacity" Value="0.65"/>
+    </Style>
+
+    <!-- ── Sprite image hover scale ─────────────────────────────────────────── -->
+    <Style Selector="Image.spriteImg">
+        <Setter Property="RenderTransform" Value="scale(1)"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2">
+                    <TransformOperationsTransition.Easing><CubicEaseOut/></TransformOperationsTransition.Easing>
+                </TransformOperationsTransition>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Image.spriteImg.hovered">
+        <Setter Property="RenderTransform" Value="scale(1.08)"/>
+    </Style>
+
+    <!-- ── Tab buttons ──────────────────────────────────────────────────────── -->
+    <Style Selector="Button.tabBtn">
+        <Setter Property="Background"      Value="Transparent"/>
+        <Setter Property="Foreground"      Value="#64748B"/>
+        <Setter Property="BorderThickness" Value="0,0,0,2"/>
+        <Setter Property="BorderBrush"     Value="Transparent"/>
+        <Setter Property="Padding"         Value="20,12"/>
+        <Setter Property="FontSize"        Value="12"/>
+        <Setter Property="FontWeight"      Value="SemiBold"/>
+        <Setter Property="Cursor"          Value="Hand"/>
+    </Style>
+    <Style Selector="Button.tabBtn /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.tabBtn.active">
+        <Setter Property="Foreground"  Value="#E2E8F0"/>
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+    </Style>
+
+    <!-- ── Folder / open button ─────────────────────────────────────────────── -->
+    <Style Selector="Button.folderBtn">
+        <Setter Property="Background"          Value="#22223A"/>
+        <Setter Property="Foreground"          Value="#E2E8F0"/>
+        <Setter Property="BorderThickness"     Value="1"/>
+        <Setter Property="BorderBrush"         Value="#3A3A5C"/>
+        <Setter Property="Padding"             Value="14,8"/>
+        <Setter Property="FontSize"            Value="12"/>
+        <Setter Property="Cursor"              Value="Hand"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="CornerRadius"        Value="6"/>
+    </Style>
+    <Style Selector="Button.folderBtn:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#2A2A45"/>
+    </Style>
+    <Style Selector="Button.folderBtn:pointerover">
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+    </Style>
+
+</Styles>

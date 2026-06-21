@@ -1,5 +1,6 @@
 global using System.Collections.ObjectModel;
 global using System.IO;
-global using System.Windows;
-global using System.Windows.Media;
-global using System.Windows.Media.Imaging;
+global using Avalonia;
+global using Avalonia.Controls;
+global using Avalonia.Media;
+global using Avalonia.Media.Imaging;

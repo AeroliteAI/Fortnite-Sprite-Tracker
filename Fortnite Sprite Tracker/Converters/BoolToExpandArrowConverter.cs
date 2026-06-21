@@ -1,13 +1,13 @@
 using System.Globalization;
-using System.Windows.Data;
+using Avalonia.Data.Converters;
 
 namespace FortniteSpriteTracker.Converters;
 
 public class BoolToExpandArrowConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        => value is true ? "▾" : "▸";
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is true ? "▾" : "▸"; // ▾ expanded / ▸ collapsed
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }

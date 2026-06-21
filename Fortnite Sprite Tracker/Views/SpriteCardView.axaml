@@ -1,0 +1,153 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FortniteSpriteTracker.Views.SpriteCardView"
+             TextOptions.TextRenderingMode="Antialias"
+             PointerEntered="Card_PointerEntered"
+             PointerExited="Card_PointerExited">
+
+    <Border x:Name="CardBorder"
+            Width="120"
+            CornerRadius="8"
+            BorderThickness="2"
+            BorderBrush="{Binding CardBorderBrush}"
+            Background="#800D1621"
+            ClipToBounds="True"
+            BoxShadow="0 4 14 0 #80000000">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="110"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="42"/>
+            </Grid.RowDefinitions>
+
+            <!-- ── Image area ──────────────────────────────────────────── -->
+            <Border Grid.Row="0" CornerRadius="6,6,0,0" ClipToBounds="True"
+                    Background="#800D1621">
+            <Panel>
+                <!-- Hover darken overlay -->
+                <Border x:Name="ImageAreaDarken"
+                        Background="Black" Opacity="0"
+                        IsHitTestVisible="False">
+                    <Border.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
+                        </Transitions>
+                    </Border.Transitions>
+                </Border>
+
+                <!-- Character image -->
+                <Image x:Name="CharacterImage"
+                       Classes="spriteImg"
+                       Source="{Binding Image}"
+                       Stretch="Uniform"
+                       Margin="6"
+                       RenderOptions.BitmapInterpolationMode="HighQuality">
+                    <Image.Effect>
+                        <DropShadowEffect Color="White" BlurRadius="18"
+                                          OffsetX="0" OffsetY="0" Opacity="0.18"/>
+                    </Image.Effect>
+                </Image>
+
+                <!-- Rarity badge top-left -->
+                <Image Source="{Binding RarityIcon}"
+                       HorizontalAlignment="Left" VerticalAlignment="Top"
+                       Height="12.6" Margin="2,2,0,0"
+                       Stretch="Uniform"
+                       RenderOptions.BitmapInterpolationMode="HighQuality"
+                       IsVisible="{Binding HasRarity}"/>
+
+                <!-- Collected checkmark top-right -->
+                <Border HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Background="#4ADE80"
+                        CornerRadius="0,6,0,5"
+                        Padding="4,2"
+                        IsVisible="{Binding IsCollected}">
+                    <TextBlock Text="✓" Foreground="#0D0D15" FontSize="9" FontWeight="Bold"/>
+                </Border>
+            </Panel>
+            </Border>
+
+            <!-- ── Display name ────────────────────────────────────────── -->
+            <TextBlock Grid.Row="1"
+                       Text="{Binding DisplayName}"
+                       Foreground="#E2E8F0"
+                       FontFamily="Arial Black"
+                       FontSize="10.5"
+                       FontWeight="Bold"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       HorizontalAlignment="Center"
+                       Margin="6,5,6,3"
+                       ToolTip.Tip="{Binding DisplayName}"/>
+
+            <!-- ── Action bar ──────────────────────────────────────────── -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Crown / Mastery toggle -->
+                <Button Grid.Column="0"
+                        Classes="crownBtn"
+                        Command="{Binding ToggleMasteredCommand}"
+                        Margin="6,3,3,6"
+                        ToolTip.Tip="Toggle Mastered">
+                    <Image Source="{Binding CrownImage}"
+                           Width="20" Height="20"
+                           RenderOptions.BitmapInterpolationMode="HighQuality"/>
+
+                </Button>
+
+                <!-- Collect toggle -->
+                <Button Grid.Column="1"
+                        Classes="collectBtn"
+                        Command="{Binding ToggleCollectedCommand}"
+                        Content="{Binding IsCollected, Converter={StaticResource BoolToCollectedTextConverter}}"
+                        Foreground="{Binding IsCollected, Converter={StaticResource BoolToCollectedForegroundConverter}}"
+                        Margin="3,3,6,6"/>
+            </Grid>
+
+            <!-- ── Pulse glow overlays ─────────────────────────────────── -->
+            <Border x:Name="CollectedPulseGlow"
+                    Grid.RowSpan="3"
+                    Margin="-2"
+                    CornerRadius="8"
+                    BorderThickness="3"
+                    BorderBrush="#4ADE80"
+                    Background="Transparent"
+                    Opacity="0"
+                    IsHitTestVisible="False"
+                    BoxShadow="0 0 16 4 #4ADE80">
+                <Border.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2">
+                            <DoubleTransition.Easing><CubicEaseOut/></DoubleTransition.Easing>
+                        </DoubleTransition>
+                    </Transitions>
+                </Border.Transitions>
+            </Border>
+
+            <Border x:Name="MasteredPulseGlow"
+                    Grid.RowSpan="3"
+                    Margin="-2"
+                    CornerRadius="8"
+                    BorderThickness="3"
+                    BorderBrush="#F59E0B"
+                    Background="Transparent"
+                    Opacity="0"
+                    IsHitTestVisible="False"
+                    BoxShadow="0 0 16 4 #F59E0B">
+                <Border.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2">
+                            <DoubleTransition.Easing><CubicEaseOut/></DoubleTransition.Easing>
+                        </DoubleTransition>
+                    </Transitions>
+                </Border.Transitions>
+            </Border>
+
+        </Grid>
+    </Border>
+</UserControl>

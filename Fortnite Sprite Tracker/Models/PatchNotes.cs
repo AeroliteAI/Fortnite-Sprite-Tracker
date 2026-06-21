@@ -15,10 +15,31 @@ public class PatchNoteEntry
 
 public static class PatchNotes
 {
-    public const string CurrentVersion = "0.1.3";
+    public const string CurrentVersion = "0.2.1";
 
     public static readonly List<PatchNoteEntry> History =
     [
+        new PatchNoteEntry
+        {
+            Version = "0.2.1",
+            Date    = "2026-06-20",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Fixed",   Text = "App icon now shows correctly in taskbar and window." },
+                new PatchNoteItem { Tag = "Fixed",   Text = "Clicking outside the search box now properly dismisses focus." },
+                new PatchNoteItem { Tag = "Changed", Text = "Group header count and divider line now match the variant colour." },
+                new PatchNoteItem { Tag = "Added",   Text = "White sprite glow effect restored on cards." },
+            ]
+        },
+        new PatchNoteEntry
+        {
+            Version = "0.1.4",
+            Date    = "2026-06-20",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Added", Text = "New \"Completed\" filter — shows only sprites that are both Collected and Mastered." },
+            ]
+        },
         new PatchNoteEntry
         {
             Version = "0.1.3",

@@ -1,33 +1,39 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
     <AssemblyName>FortniteSpriteTracker</AssemblyName>
     <RootNamespace>FortniteSpriteTracker</RootNamespace>
     <ApplicationIcon>Assets\FNTracker.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
-    <FileVersion>1.0.0.0</FileVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="SkiaSharp" Version="3.119.4" />
+    <PackageReference Include="Avalonia"                    Version="12.0.4" />
+    <PackageReference Include="Avalonia.Desktop"            Version="12.0.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent"      Version="12.0.4" />
+    <PackageReference Include="Avalonia.Fonts.Inter"        Version="12.0.4" />
+    <PackageReference Include="CommunityToolkit.Mvvm"       Version="8.4.2"  />
+    <PackageReference Include="SkiaSharp"                   Version="3.119.4"/>
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
-  <!-- Copy Assets and Sprites to output directory on build -->
   <ItemGroup>
-    <Content Include="Assets\**\*">
+    <!-- Badge PNGs/ICO embedded so /Assets/... URIs resolve in XAML -->
+    <AvaloniaResource Include="Assets\**\*" Exclude="Assets\SPECIAL\**\*"/>
+    <!-- SPECIAL frame sequence must be on disk for SpecialBadgeAnimator.Directory.GetFiles -->
+    <Content Include="Assets\SPECIAL\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>Assets\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
+    <!-- Sprites copied to output directory (loaded from file system at runtime) -->
     <Content Include="Sprites\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>Sprites\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
   </ItemGroup>
-
 </Project>

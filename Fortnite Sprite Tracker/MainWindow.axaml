@@ -1,0 +1,303 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FortniteSpriteTracker.ViewModels"
+        xmlns:views="clr-namespace:FortniteSpriteTracker.Views"
+        x:Class="FortniteSpriteTracker.MainWindow"
+        Title="Sprite Tracker"
+        Width="1340" Height="860"
+        MinWidth="800" MinHeight="500"
+        Background="Transparent"
+        TransparencyLevelHint="AcrylicBlur"
+        SystemDecorations="None"
+        WindowStartupLocation="CenterScreen"
+        TextOptions.TextRenderingMode="Antialias">
+
+    <Panel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ══ HEADER ════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource PanelBrush}"
+                BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
+                Padding="24,14,24,14"
+                PointerPressed="Header_PointerPressed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="SPRITE"   Foreground="#7C3AED" FontSize="20" FontWeight="Black" FontFamily="Segoe UI"/>
+                    <TextBlock Text=" TRACKER" Foreground="#E2E8F0" FontSize="20" FontWeight="Black" FontFamily="Segoe UI"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="#4ADE80" FontSize="12"
+                               VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    <StackPanel Orientation="Horizontal" IsVisible="{Binding IsLoading}" Margin="0,0,16,0">
+                        <TextBlock Text="⟳" Foreground="#7C3AED" FontSize="16" Margin="0,0,6,0"/>
+                        <TextBlock Text="Loading…" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button Content="⚙  Options" Classes="toolbarBtn" Click="Options_Click" Height="30" FontSize="12"/>
+                    <Button Classes="captionBtn" Click="Minimize_Click"       Margin="14,0,0,0" ToolTip.Tip="Minimize">
+                        <Image Source="/Assets/Minimize.png" Width="25" Height="25" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                    </Button>
+                    <Button Classes="captionBtn" Click="MaximizeRestore_Click" Margin="6,0,0,0" ToolTip.Tip="Maximize">
+                        <Image Source="/Assets/Maximize.png" Width="25" Height="25" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                    </Button>
+                    <Button Classes="captionBtn" Click="Close_Click"          Margin="6,0,0,0" ToolTip.Tip="Close">
+                        <Image Source="/Assets/Close.png" Width="25" Height="25" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ══ STATS BAR ══════════════════════════════════════════════════════ -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource PanelBrush}"
+                BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
+                Padding="24,12,24,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="6"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="COLLECTED" Foreground="#94A3B8" FontSize="10" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <TextBlock Foreground="#4ADE80" FontSize="12" FontWeight="Bold" Text="{Binding CollectedCount}"/>
+                            <TextBlock Foreground="#64748B" FontSize="12" Text=" / "/>
+                            <TextBlock Foreground="#E2E8F0" FontSize="12" FontWeight="Bold" Text="{Binding TotalCount}"/>
+                            <TextBlock Foreground="#4ADE80" FontSize="12" FontWeight="Bold" Text="{Binding CollectionPercentageText}" Margin="8,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                    <ProgressBar Grid.Row="1" Value="{Binding CollectionProgress}" Maximum="1" Foreground="#4ADE80"/>
+                </Grid>
+                <Border Grid.Column="1" Width="1" Background="#2A2A40" Margin="0,2"/>
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="6"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="MASTERED" Foreground="#94A3B8" FontSize="10" FontWeight="SemiBold"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <TextBlock Foreground="#F59E0B" FontSize="12" FontWeight="Bold" Text="{Binding MasteredCount}"/>
+                            <TextBlock Foreground="#64748B" FontSize="12" Text=" / "/>
+                            <TextBlock Foreground="#E2E8F0" FontSize="12" FontWeight="Bold" Text="{Binding TotalCount}"/>
+                            <TextBlock Foreground="#F59E0B" FontSize="12" FontWeight="Bold" Text="{Binding MasteryPercentageText}" Margin="8,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                    <ProgressBar Grid.Row="1" Value="{Binding MasteryProgress}" Maximum="1" Foreground="#F59E0B"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- ══ TOOLBAR ════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource PanelBrush}"
+                BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
+                Padding="20,10,20,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Text="{Binding SearchText}"
+                         Height="34" PlaceholderText="Search sprites…" VerticalContentAlignment="Center"/>
+                <Button Grid.Column="2" Content="⟳  Refresh" Classes="toolbarBtn"
+                        Command="{Binding RefreshSpritesCommand}"
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"/>
+                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Group:" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Button Content="By Variant" Classes="filterBtn"
+                            Classes.active="{Binding GroupMode, Converter={StaticResource FilterActiveConverter}, ConverterParameter=ByVariant}"
+                            Command="{Binding GroupByVariantCommand}" Margin="0,0,6,0"/>
+                    <Button Content="By Type" Classes="filterBtn"
+                            Classes.active="{Binding GroupMode, Converter={StaticResource FilterActiveConverter}, ConverterParameter=ByType}"
+                            Command="{Binding GroupByTypeCommand}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Sort:" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <ComboBox Width="210" ItemsSource="{Binding SortOptions}" SelectedIndex="{Binding SelectedSortIndex}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ══ FILTER ROW ════════════════════════════════════════════════════ -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource PanelBrush}"
+                BorderBrush="#2A2A40" BorderThickness="0,0,0,1"
+                Padding="20,8,20,8">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Content="All"           Classes="filterBtn"
+                            Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=All}"
+                            Command="{Binding FilterAllCommand}" Margin="0,0,6,0"/>
+                    <Button Content="Collected"     Classes="filterBtn filterCollected"
+                            Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=Collected}"
+                            Command="{Binding FilterCollectedCommand}" Margin="0,0,6,0"/>
+                    <Button Content="Not Collected" Classes="filterBtn filterNotCollected"
+                            Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=NotCollected}"
+                            Command="{Binding FilterNotCollectedCommand}" Margin="0,0,6,0"/>
+                    <Button Content="Mastered"      Classes="filterBtn filterMastered"
+                            Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=Mastered}"
+                            Command="{Binding FilterMasteredCommand}" Margin="0,0,6,0"/>
+                    <Button Content="Not Mastered"  Classes="filterBtn filterNotMastered"
+                            Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=NotMastered}"
+                            Command="{Binding FilterNotMasteredCommand}" Margin="0,0,6,0"/>
+                    <Button Content="Incomplete"    Classes="filterBtn"
+                            Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=Incomplete}"
+                            Command="{Binding FilterIncompleteCommand}" Margin="0,0,6,0"/>
+                    <Button Content="Completed"     Classes="filterBtn filterCompleted"
+                            Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=Completed}"
+                            Command="{Binding FilterCompletedCommand}" Margin="0,0,6,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="Size:" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Slider Minimum="50" Maximum="150" SmallChange="5" LargeChange="10"
+                            TickFrequency="5"                             Value="{Binding CardScalePercent}" Width="130" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding CardScalePercent, StringFormat={}{0}%}"
+                               Foreground="#E2E8F0" FontSize="12" Width="38" TextAlignment="Right"
+                               VerticalAlignment="Center" Margin="8,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ══ SPRITE GRID ═══════════════════════════════════════════════════ -->
+        <Grid Grid.Row="4" Background="{DynamicResource PanelBrushAlt}">
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          Padding="16,12,8,16">
+                <LayoutTransformControl>
+                    <LayoutTransformControl.LayoutTransform>
+                        <ScaleTransform ScaleX="{Binding CardScaleFactor}" ScaleY="{Binding CardScaleFactor}"/>
+                    </LayoutTransformControl.LayoutTransform>
+                    <ItemsControl ItemsSource="{Binding DisplayedSprites}" Margin="0,12,0,12">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,20">
+                                    <Grid Margin="4,0,4,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="16"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" Background="Transparent" BorderThickness="0"
+                                                Cursor="Hand" Command="{Binding ToggleExpandedCommand}" Padding="0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding IsExpanded, Converter={StaticResource BoolToExpandArrowConverter}}"
+                                                           Foreground="{Binding GroupBrush}" FontSize="10"
+                                                           Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Header}"
+                                                           Foreground="{Binding GroupBrush}" FontSize="13" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Count, StringFormat='  ({0})'}"
+                                                           Foreground="{Binding GroupBrush}" FontSize="12" VerticalAlignment="Center" Opacity="0.6"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Border Grid.Column="2" Height="1" Background="{Binding GroupBrush}" VerticalAlignment="Center" Opacity="0.4"/>
+                                    </Grid>
+                                    <ItemsControl ItemsSource="{Binding Cards}" IsVisible="{Binding IsExpanded}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <views:SpriteCardView Margin="4" DataContext="{Binding}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </LayoutTransformControl>
+            </ScrollViewer>
+
+            <!-- Empty: no sprites -->
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding IsEmpty}">
+                <TextBlock Text="📂" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                <TextBlock Text="No sprites found" Foreground="#E2E8F0" FontSize="18" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                <TextBlock Text="Add .webp files to the Sprites folder and click Refresh."
+                           Foreground="#64748B" FontSize="13" HorizontalAlignment="Center"/>
+                <Button Content="⟳  Refresh Sprites" Classes="toolbarBtn"
+                        Command="{Binding RefreshSpritesCommand}"
+                        HorizontalAlignment="Center" Margin="0,20,0,0" Padding="20,10"/>
+            </StackPanel>
+
+            <!-- Empty: filter returned nothing -->
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding IsFilteredEmpty}">
+                <TextBlock Text="🔍" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                <TextBlock Text="No sprites match" Foreground="#E2E8F0" FontSize="18" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                <TextBlock Text="Try a different search term or filter."
+                           Foreground="#64748B" FontSize="13" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Server status + version -->
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                        Orientation="Horizontal" Margin="0,0,16,2" IsHitTestVisible="False">
+                <!-- Single circle with BoxShadow glow -->
+                <Border x:Name="ServerDot"
+                        Width="10" Height="10"
+                        CornerRadius="5"
+                        Background="#F87171"
+                        BoxShadow="0 0 8 2 #F87171"
+                        VerticalAlignment="Center"
+                        Margin="0,0,6,0"
+                        IsHitTestVisible="False"/>
+                <TextBlock x:Name="ServerStatusText" FontSize="11" Opacity="0.4"
+                           Foreground="#F87171" Text="// Server Inactive"
+                           VerticalAlignment="Center" Margin="0,0,14,0"/>
+                <TextBlock x:Name="VersionText" Foreground="#E2E8F0" FontSize="11"
+                           Opacity="0.25" VerticalAlignment="Center"/>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+
+    <!-- Resize handles — placed last so they render on top at window edges -->
+    <Grid>
+        <Border Width="6" HorizontalAlignment="Left"  Cursor="SizeWestEast"        Background="Transparent" PointerPressed="Resize_PointerPressed" Tag="West"/>
+        <Border Width="6" HorizontalAlignment="Right" Cursor="SizeWestEast"        Background="Transparent" PointerPressed="Resize_PointerPressed" Tag="East"/>
+        <Border Height="6" VerticalAlignment="Top"    Cursor="SizeNorthSouth"      Background="Transparent" PointerPressed="Resize_PointerPressed" Tag="North"/>
+        <Border Height="6" VerticalAlignment="Bottom" Cursor="SizeNorthSouth"      Background="Transparent" PointerPressed="Resize_PointerPressed" Tag="South"/>
+        <Border Width="12" Height="12" HorizontalAlignment="Left"  VerticalAlignment="Top"    Cursor="TopLeftCorner"     Background="Transparent" PointerPressed="Resize_PointerPressed" Tag="NorthWest"/>
+        <Border Width="12" Height="12" HorizontalAlignment="Right" VerticalAlignment="Top"    Cursor="TopRightCorner"    Background="Transparent" PointerPressed="Resize_PointerPressed" Tag="NorthEast"/>
+        <Border Width="12" Height="12" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Cursor="BottomLeftCorner"  Background="Transparent" PointerPressed="Resize_PointerPressed" Tag="SouthWest"/>
+        <Border Width="12" Height="12" HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="BottomRightCorner" Background="Transparent" PointerPressed="Resize_PointerPressed" Tag="SouthEast"/>
+    </Grid>
+
+    </Panel>
+</Window>

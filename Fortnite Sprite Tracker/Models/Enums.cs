@@ -7,7 +7,8 @@ public enum FilterMode
     NotCollected,
     Mastered,
     NotMastered,
-    Incomplete
+    Incomplete,
+    Completed
 }
 
 public enum SortMode
