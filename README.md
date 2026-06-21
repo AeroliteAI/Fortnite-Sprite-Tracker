@@ -1,6 +1,6 @@
 # Fortnite Sprite Tracker
 
-![Fortnite Sprite Tracker](screenshots/Main.png)
+![Fortnite Sprite Tracker](Screenshots/Main.png)
 
 A Windows desktop app for tracking your Fortnite sprite collection. Mark sprites as Collected or Mastered, filter and sort your progress, and display your collection live on stream via an OBS browser source overlay.
 
