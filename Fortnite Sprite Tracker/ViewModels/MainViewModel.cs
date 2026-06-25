@@ -256,7 +256,9 @@ public partial class MainViewModel : ObservableObject
 
         var groupOrder = sorted
             .Select(groupKey).Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(key => GroupMode == GroupMode.ByVariant && key != "Normal")
+            .OrderBy(key => GroupMode == GroupMode.ByVariant
+                ? (VariantOrder.TryGetValue(key, out var o) ? o : 99)
+                : 0)
             .ThenBy(key => key, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
@@ -302,6 +304,40 @@ public partial class MainViewModel : ObservableObject
         _                       => true,
     };
 
+    private static readonly Dictionary<string, int> VariantOrder = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Base"]     = 0,
+        ["Gold"]     = 1,
+        ["Gummy"]    = 2,
+        ["Galaxy"]   = 3,
+        ["Gem"]      = 4,
+        ["Holofoil"] = 5,
+        ["Cube"]     = 6,
+        ["Quack"]    = 7,
+    };
+
+    private static readonly Dictionary<string, int> SpriteOrder = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Water"]        = 0,
+        ["Earth"]        = 1,
+        ["Fire"]         = 2,
+        ["Duck"]         = 3,
+        ["Ghost"]        = 4,
+        ["Dream"]        = 5,
+        ["Demon"]        = 6,
+        ["Punk"]         = 7,
+        ["King"]         = 8,
+        ["Burnt Peanut"] = 9,
+        ["Zero Point"]   = 10,
+        ["Air"]          = 11,
+        ["Fishy"]        = 12,
+        ["Striker"]      = 13,
+        ["Aura"]         = 14,
+        ["Seven"]        = 15,
+        ["Boss"]         = 16,
+        ["Grim"]         = 17,
+    };
+
     private static readonly Dictionary<string, int> RarityOrder = new(StringComparer.OrdinalIgnoreCase)
         { ["RARE"]=0, ["EPIC"]=1, ["LEGENDARY"]=2, ["MYTHIC"]=3, ["SPECIAL"]=4 };
 
@@ -316,7 +352,8 @@ public partial class MainViewModel : ObservableObject
             SortMode.UnmasteredFirst   => cards.OrderBy(c => c.IsMastered).ThenBy(c => c.DisplayName, StringComparer.OrdinalIgnoreCase),
             SortMode.RarityFirst       => cards.OrderBy(c => RarityOrder.TryGetValue(c.Rarity, out var r) ? r : 99)
                                                .ThenBy(c => c.DisplayName, StringComparer.OrdinalIgnoreCase),
-            _                          => cards,
+            _ => cards.OrderBy(c => SpriteOrder.TryGetValue(c.SpriteType, out var o) ? o : 99)
+                      .ThenBy(c => c.DisplayName, StringComparer.OrdinalIgnoreCase),
         };
 
     // ── Stats ────────────────────────────────────────────────────────────────

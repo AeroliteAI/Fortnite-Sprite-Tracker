@@ -15,10 +15,30 @@ public class PatchNoteEntry
 
 public static class PatchNotes
 {
-    public const string CurrentVersion = "0.2.2";
+    public const string CurrentVersion = "0.2.4";
 
     public static readonly List<PatchNoteEntry> History =
     [
+        new PatchNoteEntry
+        {
+            Version = "0.2.4",
+            Date    = "2026-06-25",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Fixed", Text = "Installer now correctly includes all sprites from the Avalonia project sprites folder." },
+            ]
+        },
+        new PatchNoteEntry
+        {
+            Version = "0.2.3",
+            Date    = "2026-06-25",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Changed", Text = "Variant groups now follow a fixed order: Base, Gold, Gummy, Galaxy, Gem, Holofoil, Cube, Quack." },
+                new PatchNoteItem { Tag = "Changed", Text = "Sprites within each group now follow a fixed order matching the release sequence." },
+                new PatchNoteItem { Tag = "Changed", Text = "\"Normal\" group renamed to \"Base\"." },
+            ]
+        },
         new PatchNoteEntry
         {
             Version = "0.2.2",

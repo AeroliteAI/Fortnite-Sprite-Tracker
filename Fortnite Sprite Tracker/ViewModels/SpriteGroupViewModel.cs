@@ -20,11 +20,15 @@ public partial class SpriteGroupViewModel : ObservableObject
         IsExpanded = isExpanded;
         GroupBrush = new SolidColorBrush(Avalonia.Media.Color.Parse(header switch
         {
-            "Normal" => "#94A3B8",
-            "Gold"   => "#F59E0B",
-            "Gummy"  => "#EC4899",
-            "Galaxy" => "#818CF8",
-            _        => "#22D3EE",
+            "Base"     => "#94A3B8",
+            "Gold"     => "#F59E0B",
+            "Galaxy"   => "#818CF8",
+            "Gem"      => "#34D399",
+            "Holofoil" => "#F0ABFC",
+            "Cube"     => "#FB923C",
+            "Quack"    => "#FDE68A",
+            "Gummy"    => "#EC4899",
+            _          => "#22D3EE",
         }));
     }
 

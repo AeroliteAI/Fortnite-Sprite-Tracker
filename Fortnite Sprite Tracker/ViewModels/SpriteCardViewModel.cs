@@ -72,7 +72,7 @@ public partial class SpriteCardViewModel : ObservableObject
         DisplayName      = displayName;
         ImagePath        = imagePath;
         SpriteType       = spriteType;
-        VariantCategory  = string.IsNullOrEmpty(variantSuffix) ? "Normal" : variantSuffix;
+        VariantCategory  = string.IsNullOrEmpty(variantSuffix) ? "Base" : variantSuffix;
         Rarity           = rarity;
         _masteredIcon    = masteredIcon;
         _notMasteredIcon = notMasteredIcon;
