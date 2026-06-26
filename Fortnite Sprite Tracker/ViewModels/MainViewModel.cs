@@ -184,6 +184,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand] private void FilterNotMastered()  => ActiveFilter = FilterMode.NotMastered;
     [RelayCommand] private void FilterIncomplete()   => ActiveFilter = FilterMode.Incomplete;
     [RelayCommand] private void FilterCompleted()    => ActiveFilter = FilterMode.Completed;
+    [RelayCommand] private void FilterUnreleased()   => ActiveFilter = FilterMode.Unreleased;
     [RelayCommand] private void ClearSearch()        => SearchText   = string.Empty;
 
     [RelayCommand] private void GroupByVariant() => GroupMode = GroupMode.ByVariant;
@@ -295,6 +296,8 @@ public partial class MainViewModel : ObservableObject
 
     private bool MatchesFilter(SpriteCardViewModel c) => ActiveFilter switch
     {
+        FilterMode.Unreleased   => IsUnreleased(c),
+        _ when IsUnreleased(c)  => false,  // hide unreleased from all other filters
         FilterMode.Collected    =>  c.IsCollected,
         FilterMode.NotCollected => !c.IsCollected,
         FilterMode.Mastered     =>  c.IsMastered,
@@ -303,6 +306,17 @@ public partial class MainViewModel : ObservableObject
         FilterMode.Completed    =>   c.IsCollected && c.IsMastered,
         _                       => true,
     };
+
+    // Unreleased sprites and variant types — hidden from all normal filters
+    private static readonly HashSet<string> UnreleasedSprites = new(StringComparer.OrdinalIgnoreCase)
+        { "Air", "Seven" };
+
+    private static readonly HashSet<string> UnreleasedVariants = new(StringComparer.OrdinalIgnoreCase)
+        { "Gem", "Holofoil" };
+
+    private bool IsUnreleased(SpriteCardViewModel c) =>
+        UnreleasedSprites.Contains(c.SpriteType) ||
+        UnreleasedVariants.Contains(c.VariantCategory);
 
     private static readonly Dictionary<string, int> VariantOrder = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -360,9 +374,10 @@ public partial class MainViewModel : ObservableObject
 
     private void RecalculateStats()
     {
-        var total     = _allCards.Count;
-        var collected = _allCards.Count(c => c.IsCollected);
-        var mastered  = _allCards.Count(c => c.IsMastered);
+        var released  = _allCards.Where(c => !IsUnreleased(c)).ToList();
+        var total     = released.Count;
+        var collected = released.Count(c => c.IsCollected);
+        var mastered  = released.Count(c => c.IsMastered);
 
         TotalCount               = total;
         CollectedCount           = collected;
@@ -371,7 +386,7 @@ public partial class MainViewModel : ObservableObject
         MasteryProgress          = total > 0 ? (double)mastered  / total : 0;
         CollectionPercentageText = $"{CollectionProgress:P0}";
         MasteryPercentageText    = $"{MasteryProgress:P0}";
-        IsEmpty                  = total == 0;
+        IsEmpty                  = total == 0 && _allCards.Count == 0;
     }
 
     // ── Save ─────────────────────────────────────────────────────────────────

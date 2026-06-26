@@ -179,6 +179,9 @@
                     <Button Content="Completed"     Classes="filterBtn filterCompleted"
                             Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=Completed}"
                             Command="{Binding FilterCompletedCommand}" Margin="0,0,6,0"/>
+                    <Button Content="🔒 Unreleased" Classes="filterBtn filterUnreleased"
+                            Classes.active="{Binding ActiveFilter, Converter={StaticResource FilterActiveConverter}, ConverterParameter=Unreleased}"
+                            Command="{Binding FilterUnreleasedCommand}" Margin="0,0,6,0"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBlock Text="Size:" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>

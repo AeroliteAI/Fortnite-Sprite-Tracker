@@ -15,10 +15,21 @@ public class PatchNoteEntry
 
 public static class PatchNotes
 {
-    public const string CurrentVersion = "0.2.4";
+    public const string CurrentVersion = "0.2.5";
 
     public static readonly List<PatchNoteEntry> History =
     [
+        new PatchNoteEntry
+        {
+            Version = "0.2.5",
+            Date    = "2026-06-25",
+            Items =
+            [
+                new PatchNoteItem { Tag = "Added",   Text = "Unreleased filter — shows Air, Seven, and all Gem/Holofoil variants in their own tab." },
+                new PatchNoteItem { Tag = "Changed", Text = "Unreleased sprites and variants are hidden from all normal filters." },
+                new PatchNoteItem { Tag = "Fixed",   Text = "Progress bars no longer count unreleased sprites." },
+            ]
+        },
         new PatchNoteEntry
         {
             Version = "0.2.4",

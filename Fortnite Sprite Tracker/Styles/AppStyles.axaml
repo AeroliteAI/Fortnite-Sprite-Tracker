@@ -80,6 +80,13 @@
     <Style Selector="Button.filterCompleted.active">
         <Setter Property="Foreground" Value="#4ADE80"/>
     </Style>
+    <!-- Unreleased active: amber/locked -->
+    <Style Selector="Button.filterUnreleased.active /template/ Border#Root">
+        <Setter Property="Background" Value="#78350F"/>
+    </Style>
+    <Style Selector="Button.filterUnreleased.active">
+        <Setter Property="Foreground" Value="#FCD34D"/>
+    </Style>
 
     <!-- ── Toolbar buttons ──────────────────────────────────────────────────── -->
     <Style Selector="Button.toolbarBtn">

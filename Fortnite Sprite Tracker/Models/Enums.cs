@@ -8,7 +8,8 @@ public enum FilterMode
     Mastered,
     NotMastered,
     Incomplete,
-    Completed
+    Completed,
+    Unreleased
 }
 
 public enum SortMode
